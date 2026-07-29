@@ -1,0 +1,9 @@
+claim,status,source
+"CRESCENDDI: 10,286 positive + 4,544 negative controls, 454 drugs, 179 AEs",VERIFIED,"Europe PMC abstract, PMID 35246559, doi 10.1038/s41597-022-01159-y"
+Horn co-authored Drug Safety 2015 consensus recommendations on systematic evaluation of DDI evidence for CDS,VERIFIED,"PMID 25556085, doi 10.1007/s40264-014-0262-8, Drug Saf 2015 (Scheife, Hines, Boyce, ... Horn JR, Sklar)"
+Horn co-authored Drug Safety 2021 comparison of medication alerts / alert fatigue,VERIFIED,"PMID 33616888, doi 10.1007/s40264-021-01048-0, Drug Saf 2021 (Shah, Seger, Fiskio, Horn, Bates)"
+Horn: Customizing clinical decision support to prevent excessive DDI alerts,VERIFIED,"PMID 21460171, Am J Health Syst Pharm 2011"
+Horn: Overriding DDI alerts in CDS - scoping review,VERIFIED,"PMID 35673040, Stud Health Technol Inform 2022"
+Horn is editor-in-chief of a journal,NOT SUPPORTED - withdraw,Europe PMC/web search found no editor-in-chief role; do not assert
+Hansten & Horn reference book documents 'noninteractions',UNVERIFIED - do not cite,No indexed source retrieved; book content not verifiable via literature APIs
+"npj Digital Medicine paper evaluating 868,069 drug pairs across 178 interaction types",UNVERIFIED - not used,"Page content not retained; claim dropped, npj DM no longer the target venue"
