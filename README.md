@@ -1,167 +1,110 @@
-# Anti-DDI v3 — an evidence framework and benchmark resource for drug non-interaction
+# Anti-DDI v3.0.1 — an evidence framework and benchmark resource for drug non-interaction
 
-**Version 3.0.0 · 797 audited pair records · 538 default benchmark Anti-DDI records · 8 human clinical anchors**
+**797 audited pair records · 538 T1/T2 higher-support benchmark candidates · 8 targeted human clinical anchors**
 
-Anti-DDI treats **evidence against a clinically meaningful drug–drug interaction as an explicit knowledge state**. It is not the same as a pair being absent from a DDI database, and it is not a universal safety label.
+Anti-DDI treats **evidence against a clinically meaningful drug–drug interaction as an explicit knowledge state**. It is not the same as absence from a DDI database, and it is not a universal safety label.
 
 > **DDI-supported ≠ unresolved ≠ Anti-DDI**
 
-The repository provides an auditable dataset, evidence tiers, degree-bias controls, a prospective Paper 5 benchmark split, human clinical-pharmacology anchors, and reproducibility tools.
+## Validation notice
 
-## The construct
+A post-analysis adversarial audit on 20 August 2026 identified label leakage in an experimental four-arm text-classifier/RIDI demonstration that had briefly been documented in v3.0.0. The associated efficacy and safety claims are withdrawn and are **not evidence for this resource**. See [`VALIDATION_NOTICE_20260820.md`](VALIDATION_NOTICE_20260820.md). The audited dataset, evidence tiers, graph audit, label exclusions and clinical-anchor table are unaffected.
 
-An **Anti-DDI** is an evidence-supported representation that a specified drug pair lacks a clinically meaningful interaction with respect to the evidence context evaluated. It is distinct from:
-
-- **documented DDI:** evidence supports a clinically meaningful interaction;
-- **unresolved:** evidence is absent, insufficient, conflicting, or underpowered;
-- **Anti-DDI:** affirmative counter-evidence supports non-interaction under a defined evidence context.
-
-Anti-DDI does **not** mean "safe in every patient", and the resource does not authorize prescribing decisions.
-
-## What changed from v2
-
-v2 was released primarily as a tiered negative-control resource. v3 preserves every original v2 column and row, but makes the evidence-state interpretation explicit and adds:
-
-1. `knowledge_state` — separates supported Anti-DDI, limited candidates, unresolved records, structural controls, and excluded positive-concern pairs;
-2. `recommended_use` — machine-readable guidance for benchmarking;
-3. `paper5_role` — identifies the frozen development/confirmatory Anti-DDI records used in the prospective RIDI study;
-4. human clinical-anchor metadata for 8 T1/T2 pairs;
-5. a 538-row ready-to-use default benchmark export;
-6. the Paper 5 split manifest and clinical-anchor table.
-
-The original `data/antiddi_v2_dataset.csv` should remain in the repository unchanged for historical reproducibility.
-
-## Data products
+## What this resource provides
 
 | File | Rows | Intended use |
 |---|---:|---|
-| `data/antiddi_v3_dataset.csv` | 797 | Complete evidence-state resource; includes excluded and unresolved states for auditability |
-| `data/antiddi_v3_benchmark.csv` | 538 | Default machine-learning benchmark: T1 + T2 only |
-| `data/paper5_split_manifest.csv` | 214 | Frozen 40-development / 174-confirmatory Anti-DDI split used in Paper 5 |
-| `data/clinical_anchor_pairs.csv` | 8 | Post-confirmatory human clinical-pharmacology anchors |
-| `data/antiddi_v2_dataset.csv` | 797 | Immutable v2 historical dataset; retained for reproducibility |
+| `data/antiddi_v3_dataset.csv` | 797 | Complete audit/evidence-state table, including excluded and unresolved records |
+| `data/antiddi_v3_benchmark.csv` | 538 | Default research benchmark candidates: T1 + T2 only |
+| `data/degree_bias_atc5_replicates.csv` | 20 | Reproducible ATC5 structural-bias output |
+| `data/degree_bias_atc5_summary.json` | — | Frozen summary of the ATC5 structural-bias analysis |
+| `data/FROZEN_REFERENCE_MANIFEST.md` | — | Row count, derivation and SHA-256 of the frozen 8,094-pair ATC5 positive reference |
+| `data/clinical_anchor_pairs.csv` | 8 | Targeted human clinical-pharmacology anchors |
+| `data/antiddi_v2_dataset.csv` | 797 | Immutable v2 audit table retained for historical reproducibility |
+
+The exact frozen `goldd2_atc5_positive_reference.csv` is included in the accompanying Supplementary Code and Data archive; its SHA-256 is recorded in `data/FROZEN_REFERENCE_MANIFEST.md`. The original `data/paper5_split_manifest.csv` is retained only as provenance for the superseded classifier experiment; it is not a validation asset.
 
 ## Evidence-state semantics
 
-| `knowledge_state` | Source tier(s) | Interpretation | Default use |
-|---|---|---|---|
-| `ANTI_DDI_SUPPORTED` | T1, T2 | Evidence supports a non-interaction state at the stated evidence strength | Default benchmark |
-| `ANTI_DDI_CANDIDATE_LIMITED` | T3 limited | Evidence is too weak for the default benchmark | Sensitivity analyses only |
-| `STRUCTURAL_CONTROL_ONLY` | T3 trivial/inert | Useful as a structural control, not as clinical evidence | Exclude from default benchmark |
-| `UNRESOLVED` | T4 | Too little co-exposure to make a negative claim | Do not label negative |
-| `POSITIVE_CONCERN_EXCLUDED` | clinical/label exclusions | Positive clinical or regulatory concern was identified | Never use as Anti-DDI |
+| State | Interpretation | Default use |
+|---|---|---|
+| `ANTI_DDI_SUPPORTED` | T1/T2 record with greater observation opportunity under the resource rules | Research benchmark candidate |
+| `ANTI_DDI_CANDIDATE_LIMITED` | T3 limited evidence | Sensitivity analysis only |
+| `STRUCTURAL_CONTROL_ONLY` | Trivial/inert structural control | Exclude from default benchmark |
+| `UNRESOLVED` | Too little co-exposure to support a negative claim | Do not label negative |
+| `POSITIVE_CONCERN_EXCLUDED` | Clinical or regulatory concern identified | Never use as Anti-DDI |
 
-The key rule is:
+**T1/T2 does not mean clinically proven safe.** It encodes greater observation opportunity and a prespecified power tier. Direct named-pair human support is available only for the targeted clinical-anchor subset and for explicit label non-interaction rows.
 
-> **Absence of DDI evidence is not evidence of non-interaction.**
+## Audit and structure
 
-## Human clinical anchoring
+The retracted predecessor file contained 827 rows. The current audit identified 902 defect instances affecting 782 rows and reduced the file to 797 distinct unordered pairs over 161 drug names. A 13-drug greedy vertex cover touches all 797 pairs; the remaining 148 drugs form an independent set. This structure is a major benchmark confounder and is disclosed rather than hidden.
 
-Paper 5 added a post-confirmatory, supportive clinical-anchor analysis. Eight retained T1/T2 Anti-DDIs had explicit named-pair human DDI evidence reporting no clinically meaningful interaction, no meaningful PK/PD change, or no clinically relevant effect. All 8 were concordant with the Anti-DDI state.
+The author of the current resource was a co-author and corresponding author of the retracted predecessor article. The predecessor is used only as an audit/lineage object; current evidence states are not inherited from its labels. See [`DISCLOSURE_retraction.md`](DISCLOSURE_retraction.md).
 
-This is **supportive clinical anchoring, not an unbiased diagnostic-accuracy cohort**. The targeted sample is small and was added after the prospective computational confirmation; it must not be used to claim 100% population accuracy.
+## Observation-opportunity tiers
 
-## Paper 5: prospective RIDI validation
+For each pair the resource records FAERS co-report count and a minimum detectable reporting-odds-ratio calculation under a stated design parameter (`p0=0.01`, two-sided alpha 0.05, power 0.80). This is a **statistical opportunity measure**, not proof of non-interaction and not a clinical safety estimate. Sensitivity analysis shows that varying `p0` from 0.001 to 0.05 changes the T1/T2 split but leaves the combined T1+T2 count at 538 (`data/p0_sensitivity.csv`).
 
-Paper 5 prospectively evaluated Anti-DDI in a frozen four-arm screening experiment:
+The historical FAERS query metadata preserve the denominator of 20,328,575 reports but not a source-export date. That missing timestamp is a limitation and is not reconstructed retrospectively.
 
-- **A:** raw representation
-- **B:** canonicalization
-- **C:** Anti-DDI evidence without forced canonicalization
-- **D:** canonicalization + Anti-DDI evidence
+## Reproducible structural-bias diagnostic
 
-Representation-induced decision instability (RIDI) was measured as:
+`analysis/run_degree_bias_atc5.py` tests whether a popularity-only score can distinguish positives from nominal negatives because of drug/class degree rather than pair-specific pharmacology.
 
-`RIDI@k = 1 - Jaccard(top-k decisions under representation x, top-k decisions under representation y)`
+Using the frozen 8,094-pair GoldD2-derived ATC level-5 positive reference and ATC5 projections of the T1/T2 Anti-DDI candidates:
 
-In the primary backend, RIDI@20 was 0.746 in A, 0.308 in B, and 0.243 in D. The prespecified incremental B−D effect was 0.065 (21.1% relative point-estimate reduction), but the 95% paired-bootstrap interval crossed no improvement. A second frozen backend reproduced the positive direction but reached a floor.
+- 1,080 unique curated ATC5 class pairs were generated;
+- 88 class pairs overlapping the positive reference were excluded from this structural diagnostic;
+- 992 curated ATC5 class pairs remained;
+- across 20 seeds, popularity-only AUC was **0.908 ± 0.006** against random unlabelled negatives and **0.900 ± 0.005** against curated Anti-DDI class pairs;
+- after degree matching, AUC fell to **0.501 ± 0.004**.
 
-The safety controls were preserved in the computational benchmark: all 200 confirmed interactions remained detected and none of three regulatory overrides was suppressed.
+This is a **structural bias diagnostic at ATC5 class level**, not clinical validation of any drug pair.
 
-The correct conclusion is therefore **not** that Anti-DDI uniformly improves every screening model. Anti-DDI improves the epistemic quality of the input; downstream decision effects remain backend-dependent and must be validated at the complete-pipeline level.
+Reproduce after placing the checksum-verified frozen CSV from the Supplementary Code and Data archive at `data/goldd2_atc5_positive_reference.csv`:
 
-## Quickstart
-
-```python
-import pandas as pd
-
-# Recommended default benchmark: supported Anti-DDI states only
-anti = pd.read_csv("data/antiddi_v3_benchmark.csv")
-
-print(anti.shape)                 # (538, 44)
-print(anti["knowledge_state"].unique())
-# ['ANTI_DDI_SUPPORTED']
+```bash
+python analysis/run_degree_bias_atc5.py \
+  --positives data/goldd2_atc5_positive_reference.csv \
+  --antiddi data/antiddi_v2_dataset.csv \
+  --out /tmp/degree_bias_atc5_replicates.csv \
+  --summary /tmp/degree_bias_atc5_summary.json
 ```
 
-For a full audit:
+The generated output should match the shipped `data/degree_bias_atc5_replicates.csv` and `data/degree_bias_atc5_summary.json`.
 
-```python
-full = pd.read_csv("data/antiddi_v3_dataset.csv")
-print(full["knowledge_state"].value_counts())
-```
+## Structured-label screen and clinical anchoring
 
-For exact Paper 5 replication:
+The shipped structured-label screen contains five positive interaction signals: three were assigned `EXCLUDED_label` and two were already clinically excluded. Four rows contain explicit non-interaction statements. This screen is a contradiction safeguard, not a comprehensive drug-information compendium review.
 
-```python
-split = pd.read_csv("data/paper5_split_manifest.csv")
-development = split.query("split == 'development'")
-confirmatory = split.query("split == 'confirmatory'")
-```
+A separate targeted supportive analysis identified eight retained T1/T2 pairs with named-pair human clinical-pharmacology or regulatory evidence consistent with no clinically meaningful interaction. The eight-pair result is **supportive anchoring, not a diagnostic-accuracy estimate**.
 
-## Recommended evaluation practice
+## Recommended use
 
-If Anti-DDI is used as a negative class:
-
-1. use `antiddi_v3_benchmark.csv` by default;
-2. preserve evidence tiers in analysis;
-3. report drug-degree or popularity structure;
-4. perform degree-matched or otherwise structure-aware negative sampling;
-5. never convert `UNRESOLVED` records into negatives;
-6. never use `POSITIVE_CONCERN_EXCLUDED` records as negatives;
-7. report the exact Anti-DDI release version and checksum;
-8. do not describe the dataset as a prescribing safety list.
-
-## Dataset structure
-
-v3 retains all 35 v2 columns and appends nine semantic/reproducibility fields:
-
-- `knowledge_state`
-- `recommended_use`
-- `paper5_role`
-- `clinical_anchor_status`
-- `clinical_anchor_type`
-- `clinical_anchor_source`
-- `clinical_anchor_locator`
-- `clinical_anchor_summary`
-- `clinical_anchor_concordance`
-
-See `data/DATA_DICTIONARY_v3.md`.
+1. Use `data/antiddi_v3_benchmark.csv` only as a research benchmark candidate set.
+2. Preserve evidence tiers and report structural degree/popularity controls.
+3. Never convert `UNRESOLVED` rows into negatives.
+4. Never use excluded clinical/label rows as negatives.
+5. Do not describe presence in the dataset as authorization to co-prescribe.
+6. Report the exact release/commit and checksum.
+7. Validate any downstream decision system independently; the superseded classifier experiment is not validation evidence.
 
 ## Reproducibility
-
-Run the original v2 validation harness and the v3 semantic checks:
 
 ```bash
 python validate.py
 python validate_v3.py
 ```
 
-The GitHub Actions workflow should run both.
-
-## Provenance and retraction disclosure
-
-This repository supersedes a retracted predecessor publication. The predecessor file is retained only for historical lineage and audit. The candidate-pair lineage is disclosed, but current v2/v3 evidence states are not inherited from the predecessor labels; they are re-evaluated under the current evidence rules. `DISCLOSURE_retraction.md` states the retraction notice accurately and defines this provenance boundary.
+The ATC5 structural diagnostic additionally requires the checksum-verified frozen positive-reference CSV identified in `data/FROZEN_REFERENCE_MANIFEST.md`.
 
 ## License
 
 - Code: MIT
 - Data and documentation: CC BY 4.0
-- Third-party identifiers and source material remain subject to their original terms.
-
-## Citation
-
-Use `CITATION.cff`. After creating the v3.0.0 GitHub release, archive the release in Zenodo and add the minted DOI to this README and `CITATION.cff`.
+- Third-party identifiers/source material remain subject to their original terms.
 
 ## Clinical boundary
 
-Anti-DDI is a research evidence framework. It is **not** a clinical safety list and does not substitute for a current drug-information source, pharmacist/physician judgment, patient context, dose, route, timing, or monitoring.
+Anti-DDI is a research evidence framework. It is **not a clinical safety list** and does not substitute for current drug-information sources, clinician/pharmacist judgment, patient context, dose, route, timing, or monitoring.

@@ -1,45 +1,37 @@
 # Retraction disclosure and provenance boundary
 
-## Purpose
+## Relationship to the predecessor article
 
-This file documents the relationship between Anti-DDI v3 and the retracted predecessor article:
+Adeeb Noor, the sole author of the present Anti-DDI resource/framework study, was a co-author and corresponding author of the retracted predecessor article:
 
-Assiri A, Noor A. *Anti-DDI Resource: A Dataset for Potential Negative Reported Interaction Combinations to Improve Medical Research and Decision-Making.* Journal of Healthcare Engineering. 2022;2022:8904342. doi:10.1155/2022/8904342. Retracted in 2023; retraction notice doi:10.1155/2023/9892301.
+Assiri A, Noor A. *Anti-DDI Resource: A Dataset for Potential Negative Reported Interaction Combinations to Improve Medical Research and Decision-Making.* Journal of Healthcare Engineering. 2022;2022:8904342. doi:10.1155/2022/8904342. Retracted in 2023; notice doi:10.1155/2023/9892301.
 
-Anti-DDI v3 does **not** treat the retracted article or its labels as validated evidence.
+This relationship is disclosed explicitly because the historical 827-row file is the lineage object audited in the current work. The retracted article and its negative labels are **not** treated as validated evidence for the current resource.
 
-## What the retraction notice states
+## What the publisher notice states
 
-The publisher's retraction notice reports that an investigation identified evidence of one or more indicators of systematic manipulation of the publication process. The notice lists indicators including discrepancies in scope, discrepancies in the description of the research, discrepancies between the availability of data and the research described, inappropriate citations, incoherent or irrelevant content, and peer-review manipulation. The publisher therefore states that it cannot vouch for the reliability or integrity of the article. The notice does not determine whether the authors were aware of or involved in any manipulation.
+The publisher reported that its investigation uncovered evidence of one or more indicators of systematic manipulation of the publication process. The notice lists: discrepancies in scope; discrepancies in the description of the research; discrepancies between data availability and the research described; inappropriate citations; incoherent, meaningless and/or irrelevant content; and peer-review manipulation. The publisher stated that it could not vouch for the reliability or integrity of the article. The notice also states that the publisher did not investigate whether the authors were aware of or involved in the systematic manipulation.
 
-Accordingly, this repository does not characterize the retraction as being limited to peer-review concerns, and it does not use the retracted article as evidence for any current Anti-DDI claim.
+Accordingly, this repository does not narrow the retraction to peer-review concerns and does not speculate beyond the notice. This disclosure follows the COPE principle that retraction information should remain linked to the affected work and that the reasons for retraction should be reported objectively and factually (COPE Retraction Guidelines, Version 2, doi:10.24318/cope.2019.1.4).
 
 ## How the historical file is used
 
-The 827-row predecessor file is retained only for **lineage and audit**. It serves two bounded purposes:
+The predecessor file is retained only for **lineage and forensic audit**. It is used to:
 
-1. to identify the historical candidate-pair universe that motivated the re-audit; and
-2. to quantify defects, naming problems, duplication, structural concentration, and clinically problematic pairs in that historical artifact.
+1. identify the historical candidate-pair universe that motivated the re-audit;
+2. enumerate duplication, naming defects, structural concentration and clinically problematic pairs; and
+3. demonstrate why database absence or inherited negative labels cannot be treated as evidence of non-interaction.
 
-The current evidence state attached to a pair is **not inherited** from the predecessor label. It is re-evaluated using the current release's independent evidence layer and explicit tiering rules. Therefore:
+The current evidence state attached to a pair is not inherited from the predecessor label. Current records carry newly computed observation-opportunity fields, explicit evidence tiers, clinical/label exclusions and provenance. Unsupported records are separated as unresolved or excluded rather than forced into a negative class.
 
-- historical pair provenance is retained;
-- historical negative labels are not trusted;
-- current Anti-DDI evidence states must be justified by current evidence fields;
-- unresolved and positive-concern records are explicitly separated from the supported benchmark.
+## Current corrective status
 
-## Audit findings retained from v2
-
-The v2 audit found 797 distinct unordered pairs among 827 historical rows and documented substantial defects and structural concentration. The complete machine-readable audit remains in the repository. The usable default benchmark is restricted to the current T1/T2 evidence-supported records; T4 records are explicitly unresolved, and clinical/regulatory positive-concern pairs are excluded from Anti-DDI use.
+Anti-DDI v3.0.1 also records a separate correction to an internal four-arm classifier/RIDI validation experiment that had briefly been documented in v3.0.0. A post-analysis adversarial audit found class-label leakage and an invalid safety comparison; the associated efficacy and safety claims are withdrawn. See `VALIDATION_NOTICE_20260820.md`. This correction does not alter the underlying audit table but reinforces the rule that an Anti-DDI evidence state must never be encoded as a surrogate safety label.
 
 ## Clinical boundary
 
-Anti-DDI is an evidence framework and research benchmark. It is not a list of universally safe drug combinations and does not authorize prescribing, de-prescribing, or alert suppression. Patient-specific decisions require current clinical drug information and professional judgment.
+Anti-DDI is an evidence framework and research benchmark resource. It is not a list of universally safe drug combinations and does not authorize prescribing, de-prescribing or alert suppression. Direct clinical use requires current drug-information sources, patient context and professional judgment.
 
-## v3 extension
+## Citation practice
 
-Version 3 adds explicit knowledge-state semantics, a frozen Paper 5 development/confirmatory split, and a small post-confirmatory set of named-pair human clinical-pharmacology anchors. These additions do not retroactively validate the historical predecessor file. They provide new, auditable evidence layers for the current resource.
-
-## Recommended citation practice
-
-Do not cite the retracted article as validation of Anti-DDI v3. Cite the archived v3 dataset release and, once available, the accompanying Anti-DDI article. The retracted article and notice may be cited only when discussing provenance and the retraction history.
+When discussing provenance, cite both the retracted predecessor article and its retraction notice and identify the predecessor as retracted. Do not cite the retracted article as validation of Anti-DDI v3.0.1. Cite the archived corrective dataset release and the accompanying current article when available.
