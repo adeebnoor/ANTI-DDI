@@ -1,7 +1,7 @@
 {
-  "title": "Anti-DDI v3: an evidence framework and benchmark resource for drug non-interaction",
+  "title": "Anti-DDI v3.0.1: an evidence framework and benchmark resource for drug non-interaction",
   "upload_type": "dataset",
-  "description": "Anti-DDI v3 contains 797 audited drug-pair evidence records, including 538 default T1/T2 evidence-supported Anti-DDI benchmark records, a frozen Paper 5 RIDI split, and eight post-confirmatory human clinical-pharmacology anchors. The resource is for research and benchmarking, not prescribing.",
+  "description": "Anti-DDI v3.0.1 contains 797 audited drug-pair evidence records, including 538 T1/T2 higher-support research benchmark candidates, a reproducible ATC5 degree/popularity-bias diagnostic, structured clinical/regulatory exclusions, and eight targeted human clinical-pharmacology anchors. A previously documented four-arm RIDI/classifier experiment is withdrawn as validation evidence after a public adversarial-audit correction. The resource is for research and benchmarking, not prescribing.",
   "creators": [
     {
       "name": "Noor, Adeeb",
@@ -14,10 +14,11 @@
     "drug-drug interaction",
     "drug non-interaction",
     "clinical decision support",
-    "RIDI",
     "pharmacovigilance",
-    "clinical pharmacology"
+    "clinical pharmacology",
+    "negative controls",
+    "degree bias"
   ],
-  "version": "3.0.0",
+  "version": "3.0.1",
   "access_right": "open"
 }
