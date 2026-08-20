@@ -20,5 +20,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .
 
-      - name: Re-derive every published quantity from the shipped files
+      - name: Re-derive v2 published quantities
         run: python validate.py --verbose
+
+      - name: Rebuild v3 release tables
+        run: python build_v3.py
+
+      - name: Validate v3 semantic and release invariants
+        run: python validate_v3.py

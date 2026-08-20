@@ -1,12 +1,11 @@
 cff-version: 1.2.0
 message: >-
-  If you use this resource, please cite both the accompanying article and the
-  archived release.
+  If you use this resource, please cite the archived v3 release. Once the
+  accompanying article receives a DOI, cite both the article and the dataset release.
 title: >-
-  Anti-DDI v2: a tiered negative-control resource for drug-drug interaction
-  research
-version: 2.0.0
-date-released: "2026-07-29"
+  Anti-DDI v3: an evidence framework and benchmark resource for drug non-interaction
+version: 3.0.0
+date-released: "2026-08-20"
 type: dataset
 license:
   - MIT
@@ -22,45 +21,24 @@ authors:
 repository-code: "https://github.com/adeebnoor/ANTI-DDI"
 url: "https://github.com/adeebnoor/ANTI-DDI"
 keywords:
-  - pharmacovigilance
+  - Anti-DDI
   - drug-drug interactions
-  - negative controls
-  - reference set
-  - benchmarking
-  - FAERS
-  - degree bias
+  - drug non-interaction
   - clinical decision support
+  - pharmacovigilance
+  - clinical pharmacology
+  - benchmarking
+  - representation-induced decision instability
+  - RIDI
+  - reproducibility
 abstract: >-
-  A resource of 797 candidate non-interacting drug pairs over 161 drugs, in
-  which each pair carries a quantified FAERS co-exposure denominator, the
-  minimum reporting odds ratio that co-exposure count could have detected, and
-  an evidence tier derived from both by a published, machine-checked rule. The
-  release ships the drug-degree metadata and matched-sampling protocol needed
-  to measure how much of a predictor's apparent performance is attributable to
-  drug popularity rather than to pharmacology: a popularity-only heuristic
-  reaches AUC 0.934 against random negatives and 0.947 against these curated
-  negatives, but 0.498 - chance - once negatives are degree-matched. The
-  resource is for evaluation and benchmarking only; it licenses no clinical
-  decision. It supersedes a retracted predecessor
-  (doi:10.1155/2022/8904342, retracted doi:10.1155/2023/9892301), which is
-  used here solely as an object of audit.
-references:
-  - type: article
-    title: >-
-      Anti-DDI Resource: A Dataset for Potential Negative Reported Interaction
-      Combinations to Improve Medical Research and Decision-Making
-    authors:
-      - family-names: Assiri
-        given-names: Abdullah
-      - family-names: Noor
-        given-names: Adeeb
-    journal: Journal of Healthcare Engineering
-    year: 2022
-    volume: "2022"
-    doi: 10.1155/2022/8904342
-    notes: >-
-      RETRACTED predecessor of this resource. Retraction notice
-      doi:10.1155/2023/9892301 (2023), issued as part of a publisher-level mass
-      retraction of compromised special issues. Cited here only to record
-      provenance; its data file is used in this release solely as an object of
-      audit. See DISCLOSURE_retraction.md.
+  Anti-DDI v3 is an evidence-state framework and benchmark resource for drug
+  non-interaction research. The full release contains 797 audited pair records,
+  of which 538 T1/T2 records constitute the default evidence-supported Anti-DDI
+  benchmark. v3 explicitly separates supported Anti-DDI states from limited
+  candidates, unresolved records, structural controls, and positive-concern
+  exclusions. It also publishes the frozen Paper 5 development/confirmatory split
+  and eight post-confirmatory human clinical-pharmacology anchors. The resource is
+  for research and benchmarking and is not a prescribing safety list. It preserves
+  the complete v2 audit and provenance trail, including disclosure of the retracted
+  predecessor used solely as an audit object.

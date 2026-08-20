@@ -4,55 +4,51 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "antiddi"
-version = "2.0.0"
-description = "Tiered negative-control resource and degree-controlled evaluation protocol for drug-drug interaction research"
+version = "3.0.0"
+description = "Evidence-state framework, benchmark resource, and degree-controlled evaluation tools for drug non-interaction research"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "Adeeb Noor", email = "arnoor@kau.edu.sa" },
+  { name = "Adeeb Noor", email = "arnoor@kau.edu.sa" },
 ]
 maintainers = [
-    { name = "Adeeb Noor", email = "arnoor@kau.edu.sa" },
+  { name = "Adeeb Noor", email = "arnoor@kau.edu.sa" },
 ]
 keywords = [
-    "pharmacovigilance",
-    "drug-drug interactions",
-    "negative controls",
-    "reference set",
-    "benchmarking",
-    "FAERS",
-    "degree bias",
+  "Anti-DDI",
+  "drug-drug interactions",
+  "drug non-interaction",
+  "clinical decision support",
+  "pharmacovigilance",
+  "benchmarking",
+  "RIDI",
+  "FAERS",
+  "degree bias",
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Healthcare Industry",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Scientific/Engineering :: Bio-Informatics",
-    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Healthcare Industry",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
 dependencies = [
-    "pandas>=1.5",
-    "numpy>=1.23",
-    "scipy>=1.9",
+  "pandas>=1.5",
+  "numpy>=1.23",
+  "scipy>=1.9",
 ]
 
-# [AUTHOR: uncomment this block and fill in the three URLs once the GitHub
-# repository exists and the Zenodo DOI has been minted (see ZENODO_deposit.md).
-# The fields are left commented rather than filled with placeholder text because
-# setuptools validates them as URLs and rejects the build otherwise.
-#
-# [project.urls]
-# Homepage = "https://github.com/<owner>/antiddi-v2"
-# Repository = "https://github.com/<owner>/antiddi-v2"
-# Dataset = "https://doi.org/10.5281/zenodo.<id>"
+[project.urls]
+Homepage = "https://github.com/adeebnoor/ANTI-DDI"
+Repository = "https://github.com/adeebnoor/ANTI-DDI"
 
 [tool.setuptools]
 packages = ["antiddi"]
