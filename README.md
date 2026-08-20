@@ -28,13 +28,13 @@ The exact frozen `goldd2_atc5_positive_reference.csv` is included in the accompa
 
 | State | Interpretation | Default use |
 |---|---|---|
-| `ANTI_DDI_SUPPORTED` | T1/T2 record with greater observation opportunity under the resource rules | Research benchmark candidate |
-| `ANTI_DDI_CANDIDATE_LIMITED` | T3 limited evidence | Sensitivity analysis only |
+| `ANTI_DDI_CANDIDATE_HIGHER_SUPPORT` | T1/T2 candidate with greater observation opportunity under the resource rules | Default research benchmark candidate |
+| `ANTI_DDI_CANDIDATE_LIMITED` | T3 candidate with limited observation opportunity | Sensitivity analysis only |
 | `STRUCTURAL_CONTROL_ONLY` | Trivial/inert structural control | Exclude from default benchmark |
 | `UNRESOLVED` | Too little co-exposure to support a negative claim | Do not label negative |
 | `POSITIVE_CONCERN_EXCLUDED` | Clinical or regulatory concern identified | Never use as Anti-DDI |
 
-**T1/T2 does not mean clinically proven safe.** It encodes greater observation opportunity and a prespecified power tier. Direct named-pair human support is available only for the targeted clinical-anchor subset and for explicit label non-interaction rows.
+**T1/T2 does not mean clinically proven non-interacting or safe.** It encodes greater observation opportunity and a prespecified power tier. Direct named-pair human support is carried separately in the clinical-anchor fields. A T1/T2 row should therefore be described as a **higher-support Anti-DDI candidate**, not as a clinically validated negative.
 
 ## Audit and structure
 
@@ -78,7 +78,7 @@ The generated output should match the shipped `data/degree_bias_atc5_replicates.
 
 The shipped structured-label screen contains five positive interaction signals: three were assigned `EXCLUDED_label` and two were already clinically excluded. Four rows contain explicit non-interaction statements. This screen is a contradiction safeguard, not a comprehensive drug-information compendium review.
 
-A separate targeted supportive analysis identified eight retained T1/T2 pairs with named-pair human clinical-pharmacology or regulatory evidence consistent with no clinically meaningful interaction. The eight-pair result is **supportive anchoring, not a diagnostic-accuracy estimate**.
+A separate targeted supportive analysis identified eight retained T1/T2 candidates with named-pair human clinical-pharmacology or regulatory evidence consistent with no clinically meaningful interaction. The eight-pair result is **supportive anchoring, not a diagnostic-accuracy estimate**.
 
 ## Recommended use
 
@@ -86,7 +86,7 @@ A separate targeted supportive analysis identified eight retained T1/T2 pairs wi
 2. Preserve evidence tiers and report structural degree/popularity controls.
 3. Never convert `UNRESOLVED` rows into negatives.
 4. Never use excluded clinical/label rows as negatives.
-5. Do not describe presence in the dataset as authorization to co-prescribe.
+5. Do not describe dataset membership as authorization to co-prescribe or suppress an alert.
 6. Report the exact release/commit and checksum.
 7. Validate any downstream decision system independently; the superseded classifier experiment is not validation evidence.
 
@@ -94,6 +94,8 @@ A separate targeted supportive analysis identified eight retained T1/T2 pairs wi
 
 ```bash
 python validate.py
+python build_v3.py
+python semantic_harden_v3.py
 python validate_v3.py
 ```
 
