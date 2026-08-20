@@ -1,10 +1,10 @@
 cff-version: 1.2.0
 message: >-
-  If you use this resource, please cite the archived v3 release. Once the
-  accompanying article receives a DOI, cite both the article and the dataset release.
+  If you use this resource, please cite the archived v3.0.1 corrective release.
+  Once the accompanying article receives a DOI, cite both the article and the dataset release.
 title: >-
-  Anti-DDI v3: an evidence framework and benchmark resource for drug non-interaction
-version: 3.0.0
+  Anti-DDI v3.0.1: an evidence framework and benchmark resource for drug non-interaction
+version: 3.0.1
 date-released: "2026-08-20"
 type: dataset
 license:
@@ -28,17 +28,18 @@ keywords:
   - pharmacovigilance
   - clinical pharmacology
   - benchmarking
-  - representation-induced decision instability
-  - RIDI
+  - degree bias
+  - negative controls
   - reproducibility
 abstract: >-
-  Anti-DDI v3 is an evidence-state framework and benchmark resource for drug
-  non-interaction research. The full release contains 797 audited pair records,
-  of which 538 T1/T2 records constitute the default evidence-supported Anti-DDI
-  benchmark. v3 explicitly separates supported Anti-DDI states from limited
-  candidates, unresolved records, structural controls, and positive-concern
-  exclusions. It also publishes the frozen Paper 5 development/confirmatory split
-  and eight post-confirmatory human clinical-pharmacology anchors. The resource is
-  for research and benchmarking and is not a prescribing safety list. It preserves
-  the complete v2 audit and provenance trail, including disclosure of the retracted
-  predecessor used solely as an audit object.
+  Anti-DDI v3.0.1 is an evidence-state framework and benchmark resource for drug
+  non-interaction research. The full release contains 797 audited pair records;
+  538 T1/T2 records are higher-support research benchmark candidates. The release
+  separates these records from limited candidates, unresolved records, structural
+  controls, and positive-concern exclusions. It adds a reproducible ATC5
+  degree/popularity-bias diagnostic and eight targeted human clinical-pharmacology
+  anchors. A previously documented four-arm RIDI/classifier experiment was
+  invalidated by a post-analysis adversarial audit and is explicitly withdrawn as
+  validation evidence. The resource is for research and benchmarking and is not a
+  prescribing safety list. It preserves the v2 audit and provenance trail,
+  including disclosure of the retracted predecessor used solely as an audit object.

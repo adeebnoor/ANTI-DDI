@@ -1,0 +1,19 @@
+{
+  "positive_atc5_pairs": 8094,
+  "positive_atc5_nodes": 437,
+  "curated_atc5_pairs_before_overlap_exclusion": 1080,
+  "class_pair_overlap_excluded": 88,
+  "curated_atc5_pairs_analyzed": 992,
+  "replicates": 20,
+  "auc_random_mean": 0.9079587303264829,
+  "auc_random_sd": 0.005962941724192983,
+  "auc_curated_mean": 0.9000179104204605,
+  "auc_curated_sd": 0.004519968238415032,
+  "auc_degree_matched_mean": 0.5005841476719298,
+  "auc_degree_matched_sd": 0.003840846533252547,
+  "curated_minus_matched_mean": 0.3994337627485307,
+  "curated_minus_matched_empirical_95_interval": [0.3896063703098695, 0.40857484368658264],
+  "n_matched_mean": 336.4,
+  "n_matched_range": [314, 349],
+  "note": "ATC level-5 structural sensitivity analysis. Class-pair overlap with the positive reference is excluded; this analysis diagnoses degree bias and does not adjudicate pair-level clinical non-interaction."
+}

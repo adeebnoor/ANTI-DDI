@@ -1,8 +1,9 @@
-"""Anti-DDI v3: an evidence framework and benchmark resource for drug non-interaction.
+"""Anti-DDI v3.0.1: an evidence framework and benchmark resource for drug non-interaction.
 
-The package preserves the v2 evidence-tier and degree-controlled benchmarking
-primitives while v3 adds explicit knowledge-state semantics and frozen Paper 5
-release tables at the repository level.
+The package preserves the audited evidence-tier and degree-controlled benchmarking
+primitives while v3.0.1 adds a public validation correction and a reproducible
+ATC5 structural-bias diagnostic. The superseded four-arm RIDI/classifier
+experiment is not validation evidence for this resource.
 
 Anti-DDI is a research evidence framework. It is not a prescribing safety list,
 and no output of this package constitutes a clinical recommendation.
@@ -10,7 +11,7 @@ and no output of this package constitutes a clinical recommendation.
 
 from __future__ import annotations
 
-__version__ = "3.0.0"
+__version__ = "3.0.1"
 
 from .evidence import (  # noqa: F401
     ANCHOR_DRUGS,

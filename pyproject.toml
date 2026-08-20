@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "antiddi"
-version = "3.0.0"
+version = "3.0.1"
 description = "Evidence-state framework, benchmark resource, and degree-controlled evaluation tools for drug non-interaction research"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,9 +22,9 @@ keywords = [
   "clinical decision support",
   "pharmacovigilance",
   "benchmarking",
-  "RIDI",
   "FAERS",
   "degree bias",
+  "negative controls",
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
