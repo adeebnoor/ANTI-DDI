@@ -16,12 +16,13 @@ A post-analysis adversarial audit on 20 August 2026 identified label leakage in 
 |---|---:|---|
 | `data/antiddi_v3_dataset.csv` | 797 | Complete audit/evidence-state table, including excluded and unresolved records |
 | `data/antiddi_v3_benchmark.csv` | 538 | Default research benchmark candidates: T1 + T2 only |
-| `data/degree_bias_atc5_replicates.csv` | 20 | Reproducible ATC5 structural-bias diagnostic |
-| `data/goldd2_atc5_positive_reference.csv` | 8,094 | Frozen ATC5 positive reference used by the structural-bias diagnostic |
+| `data/degree_bias_atc5_replicates.csv` | 20 | Reproducible ATC5 structural-bias output |
+| `data/degree_bias_atc5_summary.json` | — | Frozen summary of the ATC5 structural-bias analysis |
+| `data/FROZEN_REFERENCE_MANIFEST.md` | — | Row count, derivation and SHA-256 of the frozen 8,094-pair ATC5 positive reference |
 | `data/clinical_anchor_pairs.csv` | 8 | Targeted human clinical-pharmacology anchors |
 | `data/antiddi_v2_dataset.csv` | 797 | Immutable v2 audit table retained for historical reproducibility |
 
-The original `data/paper5_split_manifest.csv` is retained only as provenance for the superseded classifier experiment; it is not a validation asset.
+The exact frozen `goldd2_atc5_positive_reference.csv` is included in the accompanying Supplementary Code and Data archive; its SHA-256 is recorded in `data/FROZEN_REFERENCE_MANIFEST.md`. The original `data/paper5_split_manifest.csv` is retained only as provenance for the superseded classifier experiment; it is not a validation asset.
 
 ## Evidence-state semantics
 
@@ -39,19 +40,19 @@ The original `data/paper5_split_manifest.csv` is retained only as provenance for
 
 The retracted predecessor file contained 827 rows. The current audit identified 902 defect instances affecting 782 rows and reduced the file to 797 distinct unordered pairs over 161 drug names. A 13-drug greedy vertex cover touches all 797 pairs; the remaining 148 drugs form an independent set. This structure is a major benchmark confounder and is disclosed rather than hidden.
 
-The author of the current resource was a co-author of the retracted predecessor article. The predecessor is used only as an audit/lineage object; current evidence states are not inherited from its labels. See [`DISCLOSURE_retraction.md`](DISCLOSURE_retraction.md).
+The author of the current resource was a co-author and corresponding author of the retracted predecessor article. The predecessor is used only as an audit/lineage object; current evidence states are not inherited from its labels. See [`DISCLOSURE_retraction.md`](DISCLOSURE_retraction.md).
 
 ## Observation-opportunity tiers
 
 For each pair the resource records FAERS co-report count and a minimum detectable reporting-odds-ratio calculation under a stated design parameter (`p0=0.01`, two-sided alpha 0.05, power 0.80). This is a **statistical opportunity measure**, not proof of non-interaction and not a clinical safety estimate. Sensitivity analysis shows that varying `p0` from 0.001 to 0.05 changes the T1/T2 split but leaves the combined T1+T2 count at 538 (`data/p0_sensitivity.csv`).
 
-The historical FAERS query metadata preserve the denominator of 20,328,575 reports but not a source-export date. That missing timestamp is a limitation and should be reported as such rather than reconstructed retrospectively.
+The historical FAERS query metadata preserve the denominator of 20,328,575 reports but not a source-export date. That missing timestamp is a limitation and is not reconstructed retrospectively.
 
 ## Reproducible structural-bias diagnostic
 
 `analysis/run_degree_bias_atc5.py` tests whether a popularity-only score can distinguish positives from nominal negatives because of drug/class degree rather than pair-specific pharmacology.
 
-Using 8,094 GoldD2-derived ATC level-5 positive class pairs and ATC5 projections of the T1/T2 Anti-DDI candidates:
+Using the frozen 8,094-pair GoldD2-derived ATC level-5 positive reference and ATC5 projections of the T1/T2 Anti-DDI candidates:
 
 - 1,080 unique curated ATC5 class pairs were generated;
 - 88 class pairs overlapping the positive reference were excluded from this structural diagnostic;
@@ -61,15 +62,17 @@ Using 8,094 GoldD2-derived ATC level-5 positive class pairs and ATC5 projections
 
 This is a **structural bias diagnostic at ATC5 class level**, not clinical validation of any drug pair.
 
-Reproduce with:
+Reproduce after placing the checksum-verified frozen CSV from the Supplementary Code and Data archive at `data/goldd2_atc5_positive_reference.csv`:
 
 ```bash
 python analysis/run_degree_bias_atc5.py \
   --positives data/goldd2_atc5_positive_reference.csv \
   --antiddi data/antiddi_v2_dataset.csv \
-  --out data/degree_bias_atc5_replicates.csv \
-  --summary data/degree_bias_atc5_summary.json
+  --out /tmp/degree_bias_atc5_replicates.csv \
+  --summary /tmp/degree_bias_atc5_summary.json
 ```
+
+The generated output should match the shipped `data/degree_bias_atc5_replicates.csv` and `data/degree_bias_atc5_summary.json`.
 
 ## Structured-label screen and clinical anchoring
 
@@ -92,8 +95,9 @@ A separate targeted supportive analysis identified eight retained T1/T2 pairs wi
 ```bash
 python validate.py
 python validate_v3.py
-python analysis/run_degree_bias_atc5.py --positives data/goldd2_atc5_positive_reference.csv --antiddi data/antiddi_v2_dataset.csv --out /tmp/degree_bias.csv --summary /tmp/degree_bias.json
 ```
+
+The ATC5 structural diagnostic additionally requires the checksum-verified frozen positive-reference CSV identified in `data/FROZEN_REFERENCE_MANIFEST.md`.
 
 ## License
 
