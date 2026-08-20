@@ -24,7 +24,9 @@ jobs:
         run: python validate.py --verbose
 
       - name: Rebuild v3 release tables
-        run: python build_v3.py
+        run: |
+          python build_v3.py
+          python semantic_harden_v3.py
 
       - name: Validate v3 semantic and release invariants
         run: python validate_v3.py
