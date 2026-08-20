@@ -46,3 +46,5 @@ jobs:
             git commit -m "Materialize Anti-DDI v3 release data [skip ci]"
             git push origin HEAD:release/antiddi-v3.0.0
           fi
+
+# This workflow materializes only deterministic release tables; v2 data remain unchanged.
