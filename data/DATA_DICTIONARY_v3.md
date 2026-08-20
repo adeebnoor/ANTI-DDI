@@ -9,12 +9,12 @@
 | `knowledge_state` | categorical | `ANTI_DDI_CANDIDATE_HIGHER_SUPPORT`, `ANTI_DDI_CANDIDATE_LIMITED`, `STRUCTURAL_CONTROL_ONLY`, `UNRESOLVED`, `POSITIVE_CONCERN_EXCLUDED` | Conservative evidence state used for research benchmarking |
 | `recommended_use` | categorical | `DEFAULT_BENCHMARK_CANDIDATE`, `SENSITIVITY_ONLY`, `EXCLUDE_FROM_BENCHMARK`, `DO_NOT_LABEL_NEGATIVE`, `EXCLUDE_POSITIVE_CONCERN` | Machine-readable default research use |
 | `paper5_role` | categorical | `development`, `confirmatory`, `not_used_in_paper5` | Provenance from the superseded classifier experiment; not a current validation role |
-| `clinical_anchor_status` | categorical | `HUMAN_NONINTERACTION_ANCHOR`, `NOT_ANCHORED` | Whether the pair belongs to the targeted human/regulatory clinical-anchor subset |
-| `clinical_anchor_type` | string | e.g. `human_crossover_pk`, `regulatory_clinical_pharmacology` | Type of independent human/regulatory evidence |
-| `clinical_anchor_source` | string | citation text | Human/regulatory source used for the supportive anchor |
+| `clinical_anchor_status` | categorical | `HUMAN_NONINTERACTION_ANCHOR`, `NOT_ANCHORED` | Whether the pair belongs to the targeted illustrative human/regulatory anchor subset |
+| `clinical_anchor_type` | string | e.g. `human_crossover_pk`, `regulatory_clinical_pharmacology` | Type of named-pair human/regulatory evidence |
+| `clinical_anchor_source` | string | citation text | Human/regulatory source used for the illustrative anchor |
 | `clinical_anchor_locator` | string | DOI or official regulatory URL | Persistent or official source locator |
-| `clinical_anchor_summary` | string | free text | Bounded summary of the human evidence |
-| `clinical_anchor_concordance` | categorical | `CONCORDANT` or blank | Concordance in the targeted anchor subset |
+| `clinical_anchor_summary` | string | free text | Bounded summary of the named-pair evidence |
+| `clinical_anchor_concordance` | categorical | `CONCORDANT` or blank | Legacy descriptive field for the outcome-selected anchor subset; **do not aggregate it as a validation rate** |
 
 ## Mapping from v2 evidence tiers
 
@@ -30,7 +30,7 @@
 
 ## Critical semantic boundary
 
-T1/T2 status is **not direct clinical proof of non-interaction**. It indicates comparatively greater observation opportunity under the resource's prespecified co-report/power rules and makes a row eligible as a research benchmark candidate. Only pairs carrying a separate human/regulatory anchor should be described as clinically anchored. Database absence, low disproportionality, or T1/T2 membership alone must never be translated into a prescribing-safety claim.
+T1/T2 status is **not direct clinical proof of non-interaction**. It indicates comparatively greater observation opportunity under the resource's prespecified co-report/power rules and makes a row eligible as a research benchmark candidate. Only pairs carrying a separate named-pair human/regulatory anchor should be described as clinically anchored. Database absence, low disproportionality, or T1/T2 membership alone must never be translated into a prescribing-safety claim.
 
 A row in the 797-record full file is therefore not automatically an Anti-DDI. The default 538-row file contains `ANTI_DDI_CANDIDATE_HIGHER_SUPPORT` records intended for research benchmarking with the stated limitations. The remaining records are retained for auditability rather than silently deleted.
 
@@ -40,4 +40,4 @@ A row in the 797-record full file is therefore not automatically an Anti-DDI. Th
 
 ## Clinical anchors
 
-`clinical_anchor_pairs.csv` is a targeted supportive subset with named-pair human clinical-pharmacology or regulatory evidence. It is not an unbiased diagnostic-accuracy sample and should not be used to estimate the sensitivity or specificity of the 538-pair candidate benchmark.
+`clinical_anchor_pairs.csv` contains eight **targeted illustrative** examples selected because named-pair human clinical-pharmacology or regulatory sources reported no clinically meaningful interaction or no clinically relevant effect. The subset is outcome-selected and hub-concentrated: every example contains at least one member of the 13-drug vertex cover. Three examples were already identified by the structured-label screen and five add direct source anchoring not captured by that screen. The subset is not an unbiased diagnostic-accuracy cohort and must not be used to estimate a concordance rate, sensitivity, specificity, or generalization of the 538-pair candidate benchmark.
