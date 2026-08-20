@@ -17,7 +17,7 @@ A post-analysis adversarial audit on 20 August 2026 identified label leakage in 
 | `data/antiddi_v3_dataset.csv` | 797 | Complete audit/evidence-state table, including excluded and unresolved records |
 | `data/antiddi_v3_benchmark.csv` | 538 | Default research benchmark candidates: T1 + T2 only |
 | `data/degree_bias_atc5_replicates.csv` | 20 | Reproducible ATC5 structural-bias diagnostic |
-| `data/goldd2_atc5_positive_reference.csv` | 8,094 | Frozen ATC5 positive reference used by the structural-bias diagnostic |
+| `data/goldd2_atc5_positive_reference.csv.gz` | 8,094 | Frozen compressed ATC5 positive reference used by the structural-bias diagnostic |
 | `data/clinical_anchor_pairs.csv` | 8 | Targeted human clinical-pharmacology anchors |
 | `data/antiddi_v2_dataset.csv` | 797 | Immutable v2 audit table retained for historical reproducibility |
 
@@ -65,11 +65,13 @@ Reproduce with:
 
 ```bash
 python analysis/run_degree_bias_atc5.py \
-  --positives data/goldd2_atc5_positive_reference.csv \
+  --positives data/goldd2_atc5_positive_reference.csv.gz \
   --antiddi data/antiddi_v2_dataset.csv \
-  --out data/degree_bias_atc5_replicates.csv \
-  --summary data/degree_bias_atc5_summary.json
+  --out /tmp/degree_bias_atc5_replicates.csv \
+  --summary /tmp/degree_bias_atc5_summary.json
 ```
+
+The shipped `data/degree_bias_atc5_replicates.csv` and `data/degree_bias_atc5_summary.json` are the reference outputs.
 
 ## Structured-label screen and clinical anchoring
 
@@ -92,7 +94,7 @@ A separate targeted supportive analysis identified eight retained T1/T2 pairs wi
 ```bash
 python validate.py
 python validate_v3.py
-python analysis/run_degree_bias_atc5.py --positives data/goldd2_atc5_positive_reference.csv --antiddi data/antiddi_v2_dataset.csv --out /tmp/degree_bias.csv --summary /tmp/degree_bias.json
+python analysis/run_degree_bias_atc5.py --positives data/goldd2_atc5_positive_reference.csv.gz --antiddi data/antiddi_v2_dataset.csv --out /tmp/degree_bias.csv --summary /tmp/degree_bias.json
 ```
 
 ## License
