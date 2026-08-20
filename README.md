@@ -1,14 +1,16 @@
-# Anti-DDI v3.0.1 — an evidence framework and benchmark resource for drug non-interaction
+# Anti-DDI v3.0.1 — evidence states for drug non-interaction
 
-**797 audited pair records · 538 T1/T2 higher-support benchmark candidates · 8 targeted human clinical anchors**
+**797 audited pair records · 538 T1/T2 higher-support benchmark candidates · 8 targeted human/regulatory illustrations**
 
-Anti-DDI treats **evidence against a clinically meaningful drug–drug interaction as an explicit knowledge state**. It is not the same as absence from a DDI database, and it is not a universal safety label.
+Anti-DDI starts from one design principle: **a missing edge is an observation about a database; an Anti-DDI state is a claim about evidence.** Drug–drug interaction (DDI) informatics represents reasons for concern explicitly, but evidence against a clinically meaningful interaction is often collapsed with sparse evidence, incomplete coverage, or simple absence. Anti-DDI keeps those states separate.
 
-> **DDI-supported ≠ unresolved ≠ Anti-DDI**
+> **DDI-supported ≠ unresolved ≠ Anti-DDI candidate**
+
+The resource is for research and decision-support assurance. It is **not** a universal safety list.
 
 ## Validation notice
 
-A post-analysis adversarial audit on 20 August 2026 identified label leakage in an experimental four-arm text-classifier/RIDI demonstration that had briefly been documented in v3.0.0. The associated efficacy and safety claims are withdrawn and are **not evidence for this resource**. See [`VALIDATION_NOTICE_20260820.md`](VALIDATION_NOTICE_20260820.md). The audited dataset, evidence tiers, graph audit, label exclusions and clinical-anchor table are unaffected.
+A post-analysis adversarial audit on 20 August 2026 identified label leakage in an experimental four-arm text-classifier/RIDI demonstration that had briefly been documented in v3.0.0. The associated efficacy and safety claims are withdrawn and are **not evidence for this resource**. See [`VALIDATION_NOTICE_20260820.md`](VALIDATION_NOTICE_20260820.md). The audited dataset, evidence tiers, graph audit, label exclusions and clinical-anchor source table are unaffected.
 
 ## What this resource provides
 
@@ -18,11 +20,12 @@ A post-analysis adversarial audit on 20 August 2026 identified label leakage in 
 | `data/antiddi_v3_benchmark.csv` | 538 | Default research benchmark candidates: T1 + T2 only |
 | `data/degree_bias_atc5_replicates.csv` | 20 | Reproducible ATC5 structural-bias output |
 | `data/degree_bias_atc5_summary.json` | — | Frozen summary of the ATC5 structural-bias analysis |
+| `data/figure2_vertex_cover_degrees.csv` | 13 | Source data for the 13-drug vertex-cover figure |
 | `data/FROZEN_REFERENCE_MANIFEST.md` | — | Row count, derivation and SHA-256 of the frozen 8,094-pair ATC5 positive reference |
-| `data/clinical_anchor_pairs.csv` | 8 | Targeted human clinical-pharmacology anchors |
+| `data/clinical_anchor_pairs.csv` | 8 | Targeted illustrative human/regulatory source anchors; not a validation cohort |
 | `data/antiddi_v2_dataset.csv` | 797 | Immutable v2 audit table retained for historical reproducibility |
 
-The exact frozen `goldd2_atc5_positive_reference.csv` is included in the accompanying Supplementary Code and Data archive; its SHA-256 is recorded in `data/FROZEN_REFERENCE_MANIFEST.md`. The original `data/paper5_split_manifest.csv` is retained only as provenance for the superseded classifier experiment; it is not a validation asset.
+The exact frozen `goldd2_atc5_positive_reference.csv` is included in the manuscript Supplementary Code and Data archive; its SHA-256 is recorded in `data/FROZEN_REFERENCE_MANIFEST.md`. The original `data/paper5_split_manifest.csv` is retained only as provenance for the superseded classifier experiment; it is not a validation asset.
 
 ## Evidence-state semantics
 
@@ -34,7 +37,13 @@ The exact frozen `goldd2_atc5_positive_reference.csv` is included in the accompa
 | `UNRESOLVED` | Too little co-exposure to support a negative claim | Do not label negative |
 | `POSITIVE_CONCERN_EXCLUDED` | Clinical or regulatory concern identified | Never use as Anti-DDI |
 
-**T1/T2 does not mean clinically proven non-interacting or safe.** It encodes greater observation opportunity and a prespecified power tier. Direct named-pair human support is carried separately in the clinical-anchor fields. A T1/T2 row should therefore be described as a **higher-support Anti-DDI candidate**, not as a clinically validated negative.
+**T1/T2 does not mean clinically proven non-interacting or safe.** It encodes greater observation opportunity under the stated statistical setting. Direct named-pair human or regulatory evidence is carried separately. A T1/T2 row should therefore be described as a **higher-support Anti-DDI candidate**, not as a clinically validated negative.
+
+This framing yields three operational rules:
+
+1. database absence is not a negative label;
+2. unresolved evidence remains explicit rather than being forced into the negative class; and
+3. credible positive clinical/regulatory evidence overrides any de-escalating interpretation.
 
 ## Audit and structure
 
@@ -50,17 +59,19 @@ The historical FAERS query metadata preserve the denominator of 20,328,575 repor
 
 ## Reproducible structural-bias diagnostic
 
-`analysis/run_degree_bias_atc5.py` tests whether a popularity-only score can distinguish positives from nominal negatives because of drug/class degree rather than pair-specific pharmacology.
+`analysis/run_degree_bias_atc5.py` asks whether a popularity-only score can distinguish positives from nominal negatives because of drug/class degree rather than pair-specific pharmacology.
 
 Using the frozen 8,094-pair GoldD2-derived ATC level-5 positive reference and ATC5 projections of the T1/T2 Anti-DDI candidates:
 
 - 1,080 unique curated ATC5 class pairs were generated;
-- 88 class pairs overlapping the positive reference were excluded from this structural diagnostic;
+- 88 class pairs overlapping the positive reference were excluded;
 - 992 curated ATC5 class pairs remained;
 - across 20 seeds, popularity-only AUC was **0.908 ± 0.006** against random unlabelled negatives and **0.900 ± 0.005** against curated Anti-DDI class pairs;
 - after degree matching, AUC fell to **0.501 ± 0.004**.
 
-This is a **structural bias diagnostic at ATC5 class level**, not clinical validation of any drug pair.
+The conceptual point is not that a better classifier was built. It is that **a benchmark can appear pharmacologically informative when it is structurally predictable**. Degree/popularity controls are therefore part of the evidence design, not merely a modeling detail.
+
+This is a **structural-bias diagnostic at ATC5 class level**, not clinical validation of any drug pair.
 
 Reproduce after placing the checksum-verified frozen CSV from the Supplementary Code and Data archive at `data/goldd2_atc5_positive_reference.csv`:
 
@@ -78,7 +89,7 @@ The generated output should match the shipped `data/degree_bias_atc5_replicates.
 
 The shipped structured-label screen contains five positive interaction signals: three were assigned `EXCLUDED_label` and two were already clinically excluded. Four rows contain explicit non-interaction statements. This screen is a contradiction safeguard, not a comprehensive drug-information compendium review.
 
-A separate targeted supportive analysis identified eight retained T1/T2 candidates with named-pair human clinical-pharmacology or regulatory evidence consistent with no clinically meaningful interaction. The eight-pair result is **supportive anchoring, not a diagnostic-accuracy estimate**.
+Eight retained T1/T2 candidates are documented as **targeted illustrative anchors** because named-pair human clinical-pharmacology or regulatory sources reported no clinically meaningful interaction or no clinically relevant effect. They are outcome-selected and hub-concentrated, so they are **not** a diagnostic-accuracy sample or a population concordance estimate. Three were already identified by the structured-label screen; five add direct source anchoring not captured by that screen. See `data/clinical_anchor_pairs.csv`.
 
 ## Recommended use
 
