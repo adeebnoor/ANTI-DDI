@@ -1,18 +1,16 @@
-"""Anti-DDI v2: a tiered negative-control resource for drug-drug interaction research.
+"""Anti-DDI v3: an evidence framework and benchmark resource for drug non-interaction.
 
-The package provides two things: the evidence-tier primitives that generated
-the shipped dataset (:mod:`antiddi.evidence`) and the degree-controlled
-evaluation protocol that the resource exists to make possible
-(:mod:`antiddi.benchmark`).
+The package preserves the v2 evidence-tier and degree-controlled benchmarking
+primitives while v3 adds explicit knowledge-state semantics and frozen Paper 5
+release tables at the repository level.
 
-The dataset is an evaluation and benchmarking resource. It does not license
-the co-prescription of any pair, and no output of this package constitutes a
-clinical recommendation.
+Anti-DDI is a research evidence framework. It is not a prescribing safety list,
+and no output of this package constitutes a clinical recommendation.
 """
 
 from __future__ import annotations
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 
 from .evidence import (  # noqa: F401
     ANCHOR_DRUGS,
