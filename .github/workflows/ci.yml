@@ -26,10 +26,11 @@ jobs:
       - name: Re-derive v2 published quantities
         run: python validate.py --verbose
 
-      - name: Rebuild v3 release tables with conservative semantics
+      - name: Rebuild v3 release tables with conservative semantics and final anchor provenance
         run: |
           python build_v3.py
           python semantic_harden_v3.py
+          python refresh_anchor_metadata.py
 
       - name: Validate v3 semantic and release invariants
         run: python validate_v3.py
@@ -42,15 +43,15 @@ jobs:
           grep -q "withdrawn" VALIDATION_NOTICE_20260820.md
           grep -q "not valid as evidence" paper5/PAPER5_RIDI_VALIDATION.md
 
-      - name: Persist hardened v3 tables on semantic release branch
-        if: github.event_name == 'push' && github.ref == 'refs/heads/release/antiddi-v3.0.1-semantics'
+      - name: Persist final submission tables on editorial release branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/release/commsmed-editorial-final'
         run: |
-          if git diff --quiet -- data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv; then
-            echo "Hardened tables already persisted."
+          if git diff --quiet -- data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv data/clinical_anchor_pairs.csv; then
+            echo "Final submission tables already persisted."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv
-            git commit -m "Persist conservative v3.0.1 candidate semantics"
+            git add data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv data/clinical_anchor_pairs.csv
+            git commit -m "Persist final clinical-anchor provenance"
             git push
           fi
