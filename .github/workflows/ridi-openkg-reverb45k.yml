@@ -49,6 +49,7 @@ jobs:
 
       - name: Execute prospectively locked RIDI analysis
         run: |
+          set -o pipefail
           mkdir -p experiments/ridi_ncs/results
           python experiments/ridi_ncs/34_openkg_reverb45k_ridi.py \
             --valid experiments/ridi_ncs/data/reverb45k_valid \
@@ -72,6 +73,7 @@ jobs:
         run: |
           git rev-parse HEAD > experiments/ridi_ncs/results/experiment_commit.txt
           cp experiments/ridi_ncs/OPENKG_IMPLEMENTATION_ADDENDUM_20260821.md experiments/ridi_ncs/results/
+          cp experiments/ridi_ncs/OPENKG_OPERATIONAL_CORRECTION_ADDENDUM_20260821.md experiments/ridi_ncs/results/
           cp experiments/ridi_ncs/input_sha256.txt experiments/ridi_ncs/results/ || true
           sha256sum experiments/ridi_ncs/34_openkg_reverb45k_ridi.py > experiments/ridi_ncs/results/code_sha256.txt
 
