@@ -1,0 +1,49 @@
+name: RIDI COMBO schema probe
+
+on:
+  push:
+    branches: [ridi-ncs-openkg]
+    paths:
+      - '.github/workflows/ridi-combo-schema-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download pinned COMBO validation and test files
+        run: |
+          mkdir -p combo_probe
+          curl -L --fail --retry 5 https://raw.githubusercontent.com/jeffchy/COMBO/12546e1d91104279030f37cd0157ba71a5e8d6bf/combo/revised.val.json -o combo_probe/revised.val.json
+          curl -L --fail --retry 5 https://raw.githubusercontent.com/jeffchy/COMBO/12546e1d91104279030f37cd0157ba71a5e8d6bf/combo/revised.test.json -o combo_probe/revised.test.json
+          sha256sum combo_probe/*.json > combo_probe/sha256.txt
+      - name: Emit schema-only summary
+        run: |
+          python - <<'PY'
+          import json, collections
+          from pathlib import Path
+          out={}
+          for name in ['revised.val.json','revised.test.json']:
+              x=json.load(open(Path('combo_probe')/name))
+              sample=x[0]
+              def shape(v):
+                  if isinstance(v,dict): return {k:shape(z) for k,z in v.items()}
+                  if isinstance(v,list): return {'type':'list','length':len(v),'element_type':type(v[0]).__name__ if v else None,'sample':v[:5]}
+                  return {'type':type(v).__name__,'sample':v}
+              out[name]={'n_records':len(x),'top_keys':list(sample.keys()),'first_record_shape':shape(sample)}
+          json.dump(out,open('combo_probe/schema_summary.json','w'),indent=2)
+          print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: COMBO_schema_probe_${{ github.sha }}
+          path: combo_probe/
+          retention-days: 30
