@@ -1,22 +1,14 @@
 name: commsmed external validity replication
 
+# Confirmatory external results were frozen from protocol-lock commit
+# add54b8ce2c312d5245e7f00af27623306e449c4 in run 32529326608.
+# Automatic reruns are disabled after outcome inspection; manual rerun remains
+# available for reproducibility checks.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - study/commsmed-external-validity
-    paths:
-      - 'study/negative_set_validity/**'
-      - '.github/workflows/commsmed_external_validity.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'study/negative_set_validity/**'
-      - '.github/workflows/commsmed_external_validity.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   external-replication:
@@ -36,20 +28,6 @@ jobs:
       - name: Validate protocol lock and no held-out-label training
         working-directory: study/negative_set_validity
         run: python validate_design_lock.py
-      - name: Align public submission tables to tightened seven-anchor criterion
-        run: python align_submission_anchors.py
-      - name: Persist aligned submission tables if needed
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: |
-          if git diff --quiet -- data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv; then
-            echo 'Submission tables already aligned.'
-          else
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv
-            git commit -m 'Align v3 tables to seven illustrative clinical anchors'
-            git push origin HEAD:study/commsmed-external-validity
-          fi
       - name: Download public external inputs and record hashes
         working-directory: study/negative_set_validity
         run: python download_external_data.py
