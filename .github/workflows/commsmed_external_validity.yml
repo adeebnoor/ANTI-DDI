@@ -8,6 +8,12 @@ on:
     paths:
       - 'study/negative_set_validity/**'
       - '.github/workflows/commsmed_external_validity.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'study/negative_set_validity/**'
+      - '.github/workflows/commsmed_external_validity.yml'
 
 permissions:
   contents: write
@@ -33,6 +39,7 @@ jobs:
       - name: Align public submission tables to tightened seven-anchor criterion
         run: python align_submission_anchors.py
       - name: Persist aligned submission tables if needed
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           if git diff --quiet -- data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv; then
             echo 'Submission tables already aligned.'
