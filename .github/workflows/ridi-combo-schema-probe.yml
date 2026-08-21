@@ -5,6 +5,10 @@ on:
     branches: [ridi-ncs-openkg]
     paths:
       - '.github/workflows/ridi-combo-schema-probe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/ridi-combo-schema-probe.yml'
   workflow_dispatch:
 
 permissions:
@@ -28,7 +32,7 @@ jobs:
       - name: Emit schema-only summary
         run: |
           python - <<'PY'
-          import json, collections
+          import json
           from pathlib import Path
           out={}
           for name in ['revised.val.json','revised.test.json']:
