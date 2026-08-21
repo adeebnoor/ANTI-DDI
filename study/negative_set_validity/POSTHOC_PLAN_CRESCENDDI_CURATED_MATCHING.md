@@ -2,6 +2,8 @@
 
 **Status:** explicitly post hoc. This plan was written only after the confirmatory external results had been frozen in `CONFIRMATORY_RESULTS.md` from GitHub Actions run `32529326608`.
 
+**Execution rule:** run the committed script unchanged against the same checksum-recorded CRESCENDDI source records; archive every output regardless of direction.
+
 ## Why this analysis is being added
 
 The locked external study showed two simultaneous facts in CRESCENDDI:
