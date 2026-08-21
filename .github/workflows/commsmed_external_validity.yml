@@ -1,0 +1,76 @@
+name: commsmed external validity replication
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - study/commsmed-external-validity
+    paths:
+      - 'study/negative_set_validity/**'
+      - '.github/workflows/commsmed_external_validity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  external-replication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: study/commsmed-external-validity
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install locked dependencies
+        working-directory: study/negative_set_validity
+        run: python -m pip install -r requirements.txt
+      - name: Validate protocol lock and no held-out-label training
+        working-directory: study/negative_set_validity
+        run: python validate_design_lock.py
+      - name: Align public submission tables to tightened seven-anchor criterion
+        run: python align_submission_anchors.py
+      - name: Persist aligned submission tables if needed
+        run: |
+          if git diff --quiet -- data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv; then
+            echo 'Submission tables already aligned.'
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/antiddi_v3_dataset.csv data/antiddi_v3_benchmark.csv
+            git commit -m 'Align v3 tables to seven illustrative clinical anchors'
+            git push origin HEAD:study/commsmed-external-validity
+          fi
+      - name: Download public external inputs and record hashes
+        working-directory: study/negative_set_validity
+        run: python download_external_data.py
+      - name: Validate external schemas and pair-level aggregation
+        working-directory: study/negative_set_validity
+        run: python summarize_external_inputs.py
+      - name: Run external replication — 20 seeds
+        working-directory: study/negative_set_validity
+        env:
+          SEEDS: '20'
+          DDI_OUT_DIR: 'results_external'
+        run: bash run_external.sh
+      - name: Create result checksums
+        working-directory: study/negative_set_validity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          p=Path('results_external')
+          hashes={f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(p.glob('*')) if f.is_file()}
+          Path('results_external/CHECKSUMS.json').write_text(json.dumps(hashes,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: commsmed-external-validity-results
+          path: |
+            study/negative_set_validity/results_external/
+            study/negative_set_validity/external_source_manifest.json
+            study/negative_set_validity/external_input_summary.json
+          if-no-files-found: error
+          retention-days: 90
