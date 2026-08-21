@@ -9,6 +9,13 @@ on:
       - 'study/negative_set_validity/POSTHOC_PLAN_CRESCENDDI_CURATED_MATCHING.md'
       - 'study/negative_set_validity/posthoc_crescenddi_matching.py'
       - '.github/workflows/commsmed_posthoc_crescenddi.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'study/negative_set_validity/POSTHOC_PLAN_CRESCENDDI_CURATED_MATCHING.md'
+      - 'study/negative_set_validity/posthoc_crescenddi_matching.py'
+      - '.github/workflows/commsmed_posthoc_crescenddi.yml'
 
 permissions:
   contents: read
