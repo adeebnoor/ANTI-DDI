@@ -6,6 +6,11 @@ on:
     paths:
       - 'experiments/ridi_nature/**'
       - '.github/workflows/ridi_nature_crossmodal.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'experiments/ridi_nature/**'
+      - '.github/workflows/ridi_nature_crossmodal.yml'
   workflow_dispatch:
 
 permissions:
