@@ -1,0 +1,197 @@
+name: RIDI Nature GraphSAGE attribution
+
+on:
+  push:
+    branches:
+      - ridi-nature-attribution-v1
+    paths:
+      - '.github/workflows/ridi_nature_graphsage_attribution.yml'
+      - 'experiments/ridi_nature_attribution_v1/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXP: experiments/ridi_nature_attribution_v1
+
+jobs:
+  freeze:
+    name: Rebuild and verify frozen RTX cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download exact RTX-KG2 2.7.3pre artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p downloads freeze
+          curl -L --fail --retry 8 --retry-all-errors --connect-timeout 30 \
+            -o downloads/nodes.tar.xz \
+            https://media.githubusercontent.com/media/ncats/translator-lfs-artifacts/main/files/kg2.7.3pre/nodes.tar.xz
+          curl -L --fail --retry 8 --retry-all-errors --connect-timeout 30 \
+            -o downloads/edges.tar.xz \
+            https://media.githubusercontent.com/media/ncats/translator-lfs-artifacts/main/files/kg2.7.3pre/edges.tar.xz
+          echo '35bb9deaeeeaef029f18a5a21c4dd3af0c55712f20f4bc985443ce1efe2ee231  downloads/nodes.tar.xz' | sha256sum -c -
+          echo '26b8b95035519412566c0bd74d0bbd9f4180636a4ab7ea3327938b1c60cf7ed3  downloads/edges.tar.xz' | sha256sum -c -
+      - name: Rebuild frozen chemical-disease cache and enforce census
+        run: |
+          set -euo pipefail
+          python "$EXP/freeze_chem_disease.py" --download-dir downloads --out-dir freeze
+          cat freeze/NATURE_FREEZE_REBUILD_VERIFICATION.json
+      - name: Upload verified frozen cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtx-chem-disease-freeze
+          path: freeze/
+          retention-days: 7
+          compression-level: 6
+
+  seed_shards:
+    name: GraphSAGE shard ${{ matrix.shard }}
+    needs: freeze
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include:
+          - shard: s0
+            seeds: '355092268 1972696080'
+          - shard: s1
+            seeds: '1590711264 1745982372'
+          - shard: s2
+            seeds: '1113956884 734518037'
+          - shard: s3
+            seeds: '1017280056 54477576'
+          - shard: s4
+            seeds: '202245501 871610103'
+          - shard: s5
+            seeds: '1739075335 404365195'
+          - shard: s6
+            seeds: '1603643707 1173720350'
+          - shard: s7
+            seeds: '1263375671 1531572456'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install numpy==2.3.5 pandas==2.2.3 scipy==1.17.0 scikit-learn==1.8.0
+          python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+          python - <<'PY'
+          import sys,numpy,pandas,scipy,sklearn,torch
+          print('python',sys.version)
+          print('numpy',numpy.__version__)
+          print('pandas',pandas.__version__)
+          print('scipy',scipy.__version__)
+          print('sklearn',sklearn.__version__)
+          print('torch',torch.__version__)
+          assert numpy.__version__=='2.3.5'
+          assert pandas.__version__=='2.2.3'
+          assert scipy.__version__=='1.17.0'
+          assert sklearn.__version__=='1.8.0'
+          assert torch.__version__.startswith('2.10.0')
+          PY
+      - name: Download verified freeze
+        uses: actions/download-artifact@v4
+        with:
+          name: rtx-chem-disease-freeze
+          path: freeze
+      - name: Execute locked seeds
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "shard_out/${{ matrix.shard }}"
+          python "$EXP/graphsage_attribution_seed.py" \
+            --freeze-dir freeze \
+            --out-dir "shard_out/${{ matrix.shard }}" \
+            --device cpu \
+            --seeds ${{ matrix.seeds }}
+      - name: Upload seed shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: seed-shard-${{ matrix.shard }}
+          path: shard_out/${{ matrix.shard }}/
+          retention-days: 7
+          compression-level: 6
+
+  aggregate:
+    name: Locked primary verdict
+    needs: seed_shards
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install aggregation environment
+        run: |
+          set -euo pipefail
+          python -m pip install numpy==2.3.5 pandas==2.2.3
+      - name: Download verified freeze
+        uses: actions/download-artifact@v4
+        with:
+          name: rtx-chem-disease-freeze
+          path: freeze
+      - name: Download all 16 seed outputs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: seed-shard-*
+          path: shards
+          merge-multiple: false
+      - name: Compute prospectively locked endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          python "$EXP/aggregate_attribution.py" \
+            --freeze-dir freeze \
+            --shards-root shards \
+            --out-dir final_results
+          cat final_results/VERDICT.md
+          cat final_results/VERDICT.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Assemble immutable result package
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p package/results package/protocol package/code package/freeze_verification
+          cp final_results/* package/results/
+          cp "$EXP/NATURE_GRAPHSAGE_ATTRIBUTION_LOCK_v1.md" package/protocol/
+          cp "$EXP/NATURE_GRAPHSAGE_EXECUTION_ADDENDUM_v1.md" package/protocol/
+          cp "$EXP/freeze_chem_disease.py" package/code/
+          cp "$EXP/graphsage_attribution_seed.py" package/code/
+          cp "$EXP/aggregate_attribution.py" package/code/
+          cp freeze/NATURE_FREEZE_REBUILD_VERIFICATION.json package/freeze_verification/
+          cp .github/workflows/ridi_nature_graphsage_attribution.yml package/
+          printf 'repository=%s\ncommit=%s\nrun_id=%s\nrun_attempt=%s\nworkflow=%s\n' \
+            "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_WORKFLOW" \
+            > package/EXECUTION_PROVENANCE.txt
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('package'); out=[]
+          for p in sorted(root.rglob('*')):
+              if p.is_file():
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  out.append({'file':str(p.relative_to(root)),'bytes':p.stat().st_size,'sha256':h})
+          (root/'PACKAGE_SHA256.json').write_text(json.dumps(out,indent=2))
+          PY
+          zip -qr RIDI_NATURE_GRAPHSAGE_ATTRIBUTION_RESULTS.zip package
+      - name: Upload final result package
+        uses: actions/upload-artifact@v4
+        with:
+          name: RIDI_NATURE_GRAPHSAGE_ATTRIBUTION_RESULTS
+          path: RIDI_NATURE_GRAPHSAGE_ATTRIBUTION_RESULTS.zip
+          retention-days: 30
+          compression-level: 0
