@@ -6,6 +6,11 @@ on:
     paths:
       - 'experiments/ridi_nature_tabular_basis_v2/**'
       - '.github/workflows/ridi_nature_tabular_basis_v2.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'experiments/ridi_nature_tabular_basis_v2/**'
+      - '.github/workflows/ridi_nature_tabular_basis_v2.yml'
   workflow_dispatch:
 
 permissions:
