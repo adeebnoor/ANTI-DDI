@@ -1,0 +1,22 @@
+[
+  {
+    "file": "TEXT_IDENTITY_CONTROL_RESULT.json",
+    "bytes": 10971,
+    "sha256": "e5cad9e8f2ac7f204ceaa641fbe94df892237bf7a0b211804bd9873c038381f2"
+  },
+  {
+    "file": "text_frontier_points.csv.gz",
+    "bytes": 569705,
+    "sha256": "d0969922f1d17b9945ee2c47fe72eead46935b240dc0af315eec610981bf92c0"
+  },
+  {
+    "file": "text_identity_control_query_level.csv.gz",
+    "bytes": 115307,
+    "sha256": "0950e333c033fd7a73cbb4acc53dc41ffbf123a71b641e171ad314082167b6d4"
+  },
+  {
+    "file": "text_identity_control_summary.csv",
+    "bytes": 3704,
+    "sha256": "165f6355f963ba3f2ab5e7fb19afa1959e21112f472b9d97d4cd22294b579df5"
+  }
+]

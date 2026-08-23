@@ -1,0 +1,29 @@
+{
+  "lock_label": "RIDI-NATURE-IDENTITY-CONTROL-v1",
+  "parent_run_id": 32643350756,
+  "parent_commit": "304f977946b49120acbde300e8975284ac9db3b7",
+  "primary_eta": 0.001,
+  "primary_cutoffs": [
+    100,
+    500,
+    1000
+  ],
+  "primary_ensemble_size": 8,
+  "n_queries": 200,
+  "mean_avoidable_turnover_fraction": 0.787644232036272,
+  "bootstrap_seed": 3909982897,
+  "bootstrap_95_percentile_CI": [
+    0.7597206524162082,
+    0.7878308864085826,
+    0.8140956595250519
+  ],
+  "material_control_threshold": 0.25,
+  "primary_success": true,
+  "mean_delta_unconstrained": 31.13583333333333,
+  "mean_j_eta": 13.2975,
+  "mean_ridi_unconstrained": 0.11573955438354495,
+  "mean_ridi_controlled": 0.043141609080169147,
+  "mean_utility_regret": 0.0006875384475896492,
+  "query_structure_sha256": "1291fa56e9074cbf41589b3e74f4fbc40687419ed44a7bb9800e9340e83e400e",
+  "universe_sha256": "63f79154d270493514ee2d70971af8a4fb6d7e498be0044933a1bd1bc7ad8057"
+}

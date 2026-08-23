@@ -1,0 +1,37 @@
+[
+  {
+    "file": "ENVIRONMENT.json",
+    "bytes": 161,
+    "sha256": "9def05d2d9e05399ea9874839edad7c860886da5b21d67952ae0bb66e844cb58"
+  },
+  {
+    "file": "GRAPHSAGE_IDENTITY_CONTROL_VERDICT.json",
+    "bytes": 946,
+    "sha256": "573ebde15f9cfa28700fac179db9d81b5484935735b7a3cefc8bb45f993aaa32"
+  },
+  {
+    "file": "VERDICT.md",
+    "bytes": 279,
+    "sha256": "4259b16fd14d1745feae08db597d74e462f9322e9ccb68fa4f1e44303be4ec1c"
+  },
+  {
+    "file": "graphsage_frontier_points.csv.gz",
+    "bytes": 24317833,
+    "sha256": "449d15e501a56cc77764f44b1a87e9221d9651b50a3797b992b85901662f6f35"
+  },
+  {
+    "file": "graphsage_identity_control_query_level.csv.gz",
+    "bytes": 178852,
+    "sha256": "8091168467a9756def7c1013c49c866831bd920e22ef39715c821aee9a3b2957"
+  },
+  {
+    "file": "graphsage_identity_control_summary.csv",
+    "bytes": 7272,
+    "sha256": "f7b73ccc3f83ce99acfc5fcaa94dca0f906efbb447517cd2de924b28a5baa03e"
+  },
+  {
+    "file": "graphsage_primary_query_endpoint.csv",
+    "bytes": 24982,
+    "sha256": "6b60eb5806c46e2df779afc23f7d7dca64847f5756e353517f32018819b3a280"
+  }
+]
