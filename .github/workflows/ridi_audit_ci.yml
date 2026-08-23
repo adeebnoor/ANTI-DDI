@@ -1,0 +1,77 @@
+name: ridi-audit package CI
+
+on:
+  push:
+    branches: [ridi-nature-attribution-v1]
+    paths:
+      - 'software/ridi-audit/**'
+      - '.github/workflows/ridi_audit_ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'software/ridi-audit/**'
+      - '.github/workflows/ridi_audit_ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-build-cli:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install package and test dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install pytest build
+          python -m pip install ./software/ridi-audit
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          pytest -q software/ridi-audit/tests
+      - name: Build wheel and source distribution
+        run: |
+          set -euo pipefail
+          python -m build software/ridi-audit
+      - name: Smoke-test installed CLI
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          cat > "$tmp/r0.csv" <<'CSV'
+          id,score
+          a,4
+          b,3
+          c,2
+          d,1
+          CSV
+          cat > "$tmp/r1.csv" <<'CSV'
+          id,score
+          a,4
+          b,2
+          c,3
+          d,1
+          CSV
+          ridi-audit --version
+          ridi-audit compare --r0 "$tmp/r0.csv" --r1 "$tmp/r1.csv" --k 1 2 --out "$tmp/audit.json" --report "$tmp/audit.md"
+          python - <<PY
+          import json
+          from pathlib import Path
+          p=Path('$tmp')
+          d=json.loads((p/'audit.json').read_text())
+          assert d['n_candidates']==4
+          assert len(d['cutoffs'])==2
+          assert 'RIDI decision-reproducibility audit' in (p/'audit.md').read_text()
+          PY
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: ridi-audit-0.2.0-distributions
+          path: software/ridi-audit/dist/*
+          if-no-files-found: error
+          retention-days: 90
