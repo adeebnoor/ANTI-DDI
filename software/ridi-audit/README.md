@@ -6,8 +6,22 @@ Performance metrics answer whether a system remains accurate on average. `ridi-a
 
 ## Install locally
 
+From the repository root:
+
+```bash
+pip install ./software/ridi-audit
+```
+
+or from inside `software/ridi-audit`:
+
 ```bash
 pip install .
+```
+
+Check the installation with:
+
+```bash
+ridi-audit --version
 ```
 
 ## One-command audit
@@ -25,7 +39,7 @@ ridi-audit compare \
   --report audit.md
 ```
 
-The JSON output is machine-readable. The Markdown report is designed for human review and records:
+The JSON output is machine-readable. The Markdown report records:
 
 - global Spearman agreement;
 - RIDI at every pre-specified cutoff;
@@ -33,6 +47,12 @@ The JSON output is machine-readable. The Markdown report is designed for human r
 - the top-k score margin `gamma_k`;
 - the maximum paired score perturbation `epsilon`; and
 - whether the sufficient certificate `gamma_k > 2 epsilon` guarantees top-k stability.
+
+A runnable toy example is provided under `examples/`.
+
+## Score-only stability certificate
+
+Once paired score vectors for `R0` and `R1` have been stored, the sufficient margin certificate is computed directly from those scores. It does **not** require model retraining or another inference run. The certificate is deliberately one-sided: if `gamma_k > 2 epsilon`, top-k identity is guaranteed to be stable; failure to certify does not imply instability.
 
 ## Minimum reporting standard
 
@@ -51,6 +71,6 @@ The complete checklist is in `RIDI_AUDIT_MINIMUM_REPORTING_STANDARD_v1.md`.
 
 ## Interpretation discipline
 
-A non-zero RIDI establishes decision-identity turnover between the supplied pipeline realizations. It does **not** by itself establish that representation caused the turnover when training stochasticity or other uncontrolled changes are present. Conversely, a high AUROC, MRR or rank correlation does not certify top-k identity.
+A non-zero RIDI establishes decision-identity turnover between the supplied pipeline realizations. It does **not** by itself establish that representation caused the turnover when training stochasticity or other uncontrolled changes are present. Conversely, high AUROC, MRR or rank correlation does not certify top-k identity.
 
-This source tree is the public release candidate accompanying the RIDI manuscript. Exact commit provenance should be reported when the package is used in a scientific analysis.
+This source tree is the public release candidate accompanying the RIDI manuscript. Exact commit provenance should be reported when the package is used in a scientific analysis. An immutable archival identifier is still required before journal submission.
