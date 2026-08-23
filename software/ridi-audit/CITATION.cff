@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use ridi-audit, please cite the software and the accompanying decision-reproducibility manuscript."
+title: "ridi-audit"
+type: software
+authors:
+  - family-names: Noor
+    given-names: Adeeb
+    orcid: "https://orcid.org/0000-0002-8251-1853"
+version: 0.2.0
+date-released: 2026-08-23
+repository-code: "https://github.com/adeebnoor/ANTI-DDI/tree/ridi-nature-attribution-v1/software/ridi-audit"
+license: MIT
+keywords:
+  - reproducibility
+  - decision identity
+  - representation invariance
+  - ranking
+  - audit
