@@ -1,0 +1,121 @@
+name: RIDI Nature identity control v1
+
+on:
+  push:
+    branches:
+      - ridi-nature-main-v11
+    paths:
+      - '.github/workflows/ridi_nature_identity_control.yml'
+      - 'experiments/ridi_nature_identity_control_v1/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  EXP: experiments/ridi_nature_identity_control_v1
+  PARENT_RUN_ID: '32643350756'
+  PYTHONHASHSEED: '0'
+
+jobs:
+  theorem-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact numeric environment
+        run: pip install numpy==2.3.5
+      - name: Exhaustive optimality and invariance tests
+        run: python "$EXP/test_identity_control.py"
+
+  text-control:
+    needs: theorem-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen environment
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy==2.3.5 pandas==2.2.3 scipy==1.17.0 scikit-learn==1.8.0
+      - name: Run locked 20 Newsgroups identity-control transport
+        env:
+          OUTDIR: results/text_identity_control
+        run: python "$EXP/run_text_identity_control.py"
+      - name: Assemble text result package
+        run: |
+          set -euo pipefail
+          mkdir -p package/text/results package/text/protocol package/text/code
+          cp results/text_identity_control/* package/text/results/
+          cp "$EXP/NATURE_IDENTITY_CONTROL_PROTOCOL_LOCK_v1.md" package/text/protocol/
+          cp "$EXP/identity_control.py" package/text/code/
+          cp "$EXP/run_text_identity_control.py" package/text/code/
+          cp "$EXP/test_identity_control.py" package/text/code/
+          printf 'repository=%s\ncommit=%s\nrun_id=%s\nrun_attempt=%s\nworkflow=%s\n' \
+            "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_WORKFLOW" \
+            > package/text/EXECUTION_PROVENANCE.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RIDI_NATURE_TEXT_IDENTITY_CONTROL_V1
+          path: package/text
+          retention-days: 90
+          compression-level: 6
+
+  graphsage-control:
+    needs: theorem-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen environment
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy==2.3.5 pandas==2.2.3
+      - name: Download immutable parent artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/freeze inputs/shards
+          gh run download "$PARENT_RUN_ID" --repo "$GITHUB_REPOSITORY" --name rtx-chem-disease-freeze --dir inputs/freeze
+          for shard in s0 s1 s2 s3 s4 s5 s6 s7; do
+            mkdir -p "inputs/shards/$shard"
+            gh run download "$PARENT_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "seed-shard-$shard" --dir "inputs/shards/$shard"
+          done
+      - name: Run locked GraphSAGE identity-control primary analysis
+        run: |
+          python "$EXP/run_graphsage_identity_control.py" \
+            --freeze-dir inputs/freeze \
+            --shards-root inputs/shards \
+            --out-dir results/graphsage_identity_control
+          cat results/graphsage_identity_control/VERDICT.md
+          cat results/graphsage_identity_control/VERDICT.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Assemble GraphSAGE result package
+        run: |
+          set -euo pipefail
+          mkdir -p package/graphsage/results package/graphsage/protocol package/graphsage/code
+          cp results/graphsage_identity_control/* package/graphsage/results/
+          cp "$EXP/NATURE_IDENTITY_CONTROL_PROTOCOL_LOCK_v1.md" package/graphsage/protocol/
+          cp "$EXP/identity_control.py" package/graphsage/code/
+          cp "$EXP/run_graphsage_identity_control.py" package/graphsage/code/
+          cp "$EXP/test_identity_control.py" package/graphsage/code/
+          printf 'repository=%s\ncommit=%s\nrun_id=%s\nrun_attempt=%s\nworkflow=%s\nparent_run_id=%s\n' \
+            "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_WORKFLOW" "$PARENT_RUN_ID" \
+            > package/graphsage/EXECUTION_PROVENANCE.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RIDI_NATURE_GRAPHSAGE_IDENTITY_CONTROL_V1
+          path: package/graphsage
+          retention-days: 90
+          compression-level: 6
+
