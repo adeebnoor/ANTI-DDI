@@ -1,0 +1,3 @@
+method,k,pair,drug_a,drug_b,level,is_positive,test_positive,legacy_rank,current_rank,direction,abs_rank_shift,legacy_score,current_score,representation_change,evidence_status
+adamic_adar,100,DDInter1472|||DDInter1589,Pioglitazone,Rifabutin,Moderate,True,1,241422,75,entered,241347,2.532390,109.360245,Rifabutin ATC: J04AB04 -> J04AB04+A02BD16,frozen held-out positive assertion
+adamic_adar,100,DDInter1589|||DDInter825,Rifabutin,Glimepiride,Moderate,True,1,229663,76,entered,229587,2.693826,109.360245,Rifabutin ATC: J04AB04 -> J04AB04+A02BD16,frozen held-out positive assertion
