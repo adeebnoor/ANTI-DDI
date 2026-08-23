@@ -4,16 +4,20 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ridi-audit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Decision-identity reproducibility audit under representation interventions"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [{name = "Adeeb Noor"}]
 dependencies = ["numpy>=1.24", "pandas>=2.0", "scipy>=1.10"]
+keywords = ["reproducibility", "decision stability", "representation", "ranking", "audit"]
 
 [project.scripts]
 ridi-audit = "ridi_audit.cli:main"
+
+[project.urls]
+Source = "https://github.com/adeebnoor/ANTI-DDI/tree/ridi-nature-attribution-v1/software/ridi-audit"
 
 [tool.setuptools.packages.find]
 where = ["src"]
