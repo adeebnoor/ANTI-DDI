@@ -1,0 +1,7 @@
+method,k,pair,drug_a,drug_b,level,is_positive,test_positive,legacy_rank,current_rank,direction,abs_rank_shift,legacy_score,current_score
+adamic_adar,100,DDInter1269|||DDInter1621,Nateglinide,Rosiglitazone,Unknown,True,1,92,104,left,12,102.13076782226562,103.40309143066406
+adamic_adar,100,DDInter1340|||DDInter1621,Omeprazole,Rosiglitazone,Unknown,True,1,100,102,left,2,100.67501831054688,103.57498168945312
+adamic_adar,100,DDInter1388|||DDInter1472,Pantoprazole,Pioglitazone,Unknown,True,1,98,109,left,11,100.80831146240234,102.68701171875
+adamic_adar,100,DDInter1388|||DDInter825,Pantoprazole,Glimepiride,Unknown,True,1,99,110,left,11,100.80831146240234,102.68701171875
+adamic_adar,100,DDInter1472|||DDInter1589,Pioglitazone,Rifabutin,Moderate,True,1,241422,75,entered,241347,2.532390117645264,109.36024475097656
+adamic_adar,100,DDInter1589|||DDInter825,Rifabutin,Glimepiride,Moderate,True,1,229663,76,entered,229587,2.693826198577881,109.36024475097656
