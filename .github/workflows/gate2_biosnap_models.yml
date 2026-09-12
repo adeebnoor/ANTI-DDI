@@ -31,8 +31,15 @@ jobs:
         run: |
           python analysis/run_biosnap_dti_gate2_models.py --input external_data/ChG-TargetDecagon_targets.csv.gz --out-prefix results/biosnap_dti_gate2 --replicates 5
           cat results/biosnap_dti_gate2.md
-      - name: Commit frozen pilot results
+      - name: Commit frozen pilot results safely
         run: |
-          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add results/biosnap_gate2.sha256 results/biosnap_dti_gate2_replicates.csv results/biosnap_dti_gate2_summary.json results/biosnap_dti_gate2.md
-          if git diff --cached --quiet; then echo unchanged; else git commit -m 'Record BioSNAP learned-model Gate 2 pilot [skip ci]' && git push origin HEAD:science-structural-shortcuts; fi
+          if git diff --cached --quiet; then
+            echo unchanged
+          else
+            git commit -m 'Record BioSNAP learned-model Gate 2 pilot [skip ci]'
+            git pull --rebase origin science-structural-shortcuts
+            git push origin HEAD:science-structural-shortcuts
+          fi
