@@ -54,11 +54,11 @@ The same frozen candidate universe is ranked by the model selected under convent
 
 DTI Top-100 overlap was zero in every one of five frozen split seeds. Disease–gene HT@100 bootstrap 95% interval was 0.924–0.960.
 
-Interpretation: benchmark design can alter model selection and thereby alter the identity of prioritized biological hypotheses. This does **not** establish which hypothesis list is biologically correct.
+Interpretation: benchmark design can alter model selection and thereby alter the identity of prioritized biological hypotheses. This does **not** establish which hypothesis list is biologically correct. A within-model initialization/split stability control remains required before treating the cross-model turnover magnitude itself as surprising.
 
 ## H4 — temporal external-validity pilot
 
-Status: **PASS as pilot; requires independent replication and stronger uncertainty analysis**.
+Status: **PASS as pilot**.
 
 Frozen BioGRID comparison:
 
@@ -77,7 +77,21 @@ Internal historical evaluation:
 
 Conventional evaluation selected NeuralMF. Structure-neutralized evaluation selected SVD. On later-added edges versus degree-matched persistent-unobserved controls, the neutralized-selected model exceeded the conventional-selected model by **0.154 AUC**.
 
-Important caveat: this first H4 test uses a degree-matched future comparison and can therefore be criticized as sharing an evaluation principle with the neutralized selection rule. A stricter non-circular test has been launched: rank the complete historical non-edge candidate universe without degree-matched control sampling and measure actual later-added edge yield at fixed top-k.
+### H4b — non-circular prospective discovery yield
+
+Status: **PASS and stronger than the matched-control H4 pilot**.
+
+To remove the concern that the future test reused the same degree-balancing principle as model selection, all three models were retrained on the complete historical network and used to rank the **same complete historical non-edge universe**. No degree matching, negative sampling, or future-control construction was used. The frozen universe contained **70,041,100** unknown human protein pairs; **5,635** were subsequently present as BioGRID MV-Physical relations in release 5.0.261.
+
+| Model | Future hits @100 | @1,000 | @10,000 | @50,000 |
+|---|---:|---:|---:|---:|
+| SVD — neutralized-selected | 7 | 26 | 159 | 522 |
+| NeuralMF — conventional-selected | 0 | 5 | 42 | 181 |
+| LightGCN | 0 | 5 | 66 | 241 |
+
+For SVD, the corresponding enrichment above a uniform draw from the full candidate universe was **870.1× at 100**, **323.2× at 1,000**, **197.6× at 10,000**, and **129.8× at 50,000**. At 50,000 hypotheses, SVD recovered 9.26% of all later-added closed-world edges versus 3.21% for NeuralMF and 4.28% for LightGCN.
+
+This is the strongest current external-validity result because the future-yield endpoint is not created by the same degree-matching intervention used to select the model. It remains a single PPI temporal domain, and BioGRID additions reflect research and curation processes rather than an unbiased sample of biological truth.
 
 ## Evidence-aware Anti-DDI axis
 
@@ -89,20 +103,21 @@ The frozen supplementary archive contains:
 - 538 higher-support Anti-DDI candidate records,
 - explicit evidence tiers and contradiction safeguards.
 
-The final Science analysis will distinguish random unobserved pairs, curated counter-evidence, and degree-matched/evidence-aware comparisons. Preliminary learned-model signals are not promoted to final results until reproduced by a dedicated frozen workflow.
+Independent re-execution supports a performance shift when random missing pairs are replaced by curated counter-evidence pairs, but the evidence-state sets differ materially in structural exposure and exact matching coverage is low. Therefore the final analysis will not present forced one-to-one matching as if it removed confounding. Evidence state and structural exposure will be reported as separate axes with explicit balance diagnostics.
 
 ## Prior-art boundary
 
-The project does not claim discovery of degree/rich-node/prior bias. Closely related prior work already includes:
+The project does not claim discovery of degree/rich-node/prior bias or invention of temporal biomedical hypothesis benchmarking. Closely related prior work already includes:
 
-- bias-aware PPI evaluation showing rich-node bias and temporal BioGRID effects;
-- target-prior bias and causal debiasing in DTI;
-- biomedical-KG leakage/evaluation studies comparing random/cold-start tests with independent evidence.
+- PNAS 2025 bias-aware PPI evaluation showing rich-node bias and temporal BioGRID effects;
+- Nature Communications 2025 target-prior bias and causal debiasing in DTI;
+- Bioinformatics 2026 biomedical-KG leakage/evaluation work comparing random/cold-start tests with independent evidence;
+- Dyport 2024 dynamic/temporal biomedical hypothesis-generation benchmarking.
 
 The intended new contribution is the joint chain:
 
-**cross-domain structural inflation → model-rank reversal → hypothesis-selection turnover → temporal/independent scientific consequence**, with evidence-state-aware negative controls where available.
+**cross-domain structural inflation → model-rank reversal → hypothesis-selection turnover → non-circular later-evidence consequence**, with evidence-state-aware negative controls where available.
 
 ## Current claim ceiling
 
-The current evidence supports a strong biomedical-AI evaluation paper and justifies continued testing for a Science-level contribution. It does not yet justify a final claim of universal correction or a claim that structure-neutralization always improves prospective discovery. The non-circular future-yield analysis and at least one independent temporal/real-world replication remain decisive.
+The current evidence now supports a strong claim that benchmark construction can redirect model selection and biological hypothesis prioritization, with one non-circular temporal PPI experiment showing substantially higher later-evidence yield for the structure-neutralized-selected model. A Science-level general claim still requires at least one independent temporal/external replication outside PPI, stronger contemporary models, formal uncertainty for prospective yield, and H5 stability controls. It does **not** justify a claim that structure-neutralized evaluation universally improves prospective discovery.
