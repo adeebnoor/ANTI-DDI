@@ -43,18 +43,29 @@ Status: **PASS as pilot**.
 
 ## H5 — RIDI-inspired hypothesis-selection identity
 
-Status: **STRONGLY SUPPORTED as pilot**.
+Status: **DTI ROBUST; DISEASE–GENE BOUNDARY / INCONCLUSIVE FOR CAUSAL ATTRIBUTION**.
 
 The same frozen candidate universe is ranked by the model selected under conventional evaluation and the model selected under structure-neutralized evaluation.
+
+Initial turnover estimates:
 
 | Family | Candidate pairs | Score Spearman | HT@100 | HT@500 | HT@1000 |
 |---|---:|---:|---:|---:|---:|
 | DTI | ~817,292 | 0.091 | 1.000 | 0.9996 | 0.9406 |
 | Disease–gene | ~614,361 | 0.258 | 0.942 | 0.8988 | 0.8760 |
 
-DTI Top-100 overlap was zero in every one of five frozen split seeds. Disease–gene HT@100 bootstrap 95% interval was 0.924–0.960.
+A fixed-split, fixed-candidate-universe stability control then varied only model initialization/training randomness:
 
-Interpretation: benchmark design can alter model selection and thereby alter the identity of prioritized biological hypotheses. This does **not** establish which hypothesis list is biologically correct. A within-model initialization/split stability control remains required before treating the cross-model turnover magnitude itself as surprising.
+| Family | Comparison | HT@100 | HT@500 | HT@1000 |
+|---|---|---:|---:|---:|
+| DTI | within NeuralMF | 0.307 | 0.036 | 0.212 |
+| DTI | within SVD | 0.138 | 0.136 | 0.155 |
+| DTI | conventional winner vs neutralized winner | 1.000 | 0.999 | 0.945 |
+| Disease–gene | within NeuralMF | 0.934 | 0.877 | 0.849 |
+| Disease–gene | within LightGCN | 0.684 | 0.658 | 0.642 |
+| Disease–gene | conventional winner vs neutralized winner | 0.944 | 0.898 | 0.872 |
+
+Interpretation: **DTI provides a clean benchmark-induced scientific-decision result** because cross-selected-model turnover greatly exceeds ordinary within-model initialization turnover. In disease–gene prediction, NeuralMF itself is highly unstable at top-k, so the initial cross-model turnover cannot be attributed mainly to benchmark-induced model selection. This is retained as a boundary result rather than counted as a second robust H5 replication. A confirmatory ensemble-ranking analysis and PPI hypothesis-identity analysis are warranted.
 
 ## H4 — temporal external-validity pilot
 
@@ -116,8 +127,8 @@ The project does not claim discovery of degree/rich-node/prior bias or invention
 
 The intended new contribution is the joint chain:
 
-**cross-domain structural inflation → model-rank reversal → hypothesis-selection turnover → non-circular later-evidence consequence**, with evidence-state-aware negative controls where available.
+**cross-domain structural inflation → model-rank reversal → stable hypothesis-selection change where identifiable → non-circular later-evidence consequence**, with evidence-state-aware negative controls where available.
 
 ## Current claim ceiling
 
-The current evidence now supports a strong claim that benchmark construction can redirect model selection and biological hypothesis prioritization, with one non-circular temporal PPI experiment showing substantially higher later-evidence yield for the structure-neutralized-selected model. A Science-level general claim still requires at least one independent temporal/external replication outside PPI, stronger contemporary models, formal uncertainty for prospective yield, and H5 stability controls. It does **not** justify a claim that structure-neutralized evaluation universally improves prospective discovery.
+The current evidence supports a strong claim that benchmark construction can redirect model selection, with robust downstream hypothesis-priority change demonstrated in DTI and one non-circular temporal PPI experiment showing substantially higher later-evidence yield for the structure-neutralized-selected model. A Science-level general claim still requires at least one independent temporal/external replication outside PPI, stronger contemporary models, formal uncertainty for prospective yield, and a second stable hypothesis-identity replication. It does **not** justify a claim that structure-neutralized evaluation universally improves prospective discovery.
