@@ -20,9 +20,9 @@ jobs:
       - name: Download curated-article BindingDB TSV
         run: |
           mkdir -p external_data
-          curl -fL --retry 4 --retry-delay 2 \
-            'https://www.bindingdb.org/rwd/bind/chemsearch/marvin/SDFdownload.jsp?download_file=%2Frwd%2Fbind%2Fdownloads%2FBindingDB_BindingDB_Articles_202609_tsv.zip' \
-            -o external_data/bindingdb_articles.zip
+          URL='https://www.bindingdb.org/rwd/bind/downloads/BindingDB_BindingDB_Articles_202609_tsv.zip'
+          curl -fL --retry 4 --retry-delay 2 "$URL" -o external_data/bindingdb_articles.zip
+          file external_data/bindingdb_articles.zip
           ls -lh external_data/bindingdb_articles.zip
           sha256sum external_data/bindingdb_articles.zip
           unzip -l external_data/bindingdb_articles.zip | head -20
@@ -36,6 +36,7 @@ jobs:
           f=max(fs,key=os.path.getsize)
           d=pd.read_csv(f,sep='\t',nrows=5,low_memory=False)
           print('COLUMNS',list(d.columns))
-          print('DATE_COLUMNS',[c for c in d.columns if 'date' in c.lower() or 'year' in c.lower() or 'pub' in c.lower()])
-          print(d[[c for c in d.columns if 'date' in c.lower() or 'year' in c.lower() or 'pub' in c.lower()][:12]].head().to_string())
+          dc=[c for c in d.columns if 'date' in c.lower() or 'year' in c.lower() or 'pub' in c.lower()]
+          print('DATE_COLUMNS',dc)
+          print(d[dc[:12]].head().to_string())
           PY
