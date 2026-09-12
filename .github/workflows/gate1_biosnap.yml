@@ -37,6 +37,8 @@ jobs:
             -o external_data/ChG-TargetDecagon_targets.csv.gz
           sha256sum external_data/ChG-TargetDecagon_targets.csv.gz | tee results/biosnap_targetdecagon.sha256
           gzip -t external_data/ChG-TargetDecagon_targets.csv.gz
+          echo '--- first five decompressed lines (visible delimiters) ---'
+          zcat external_data/ChG-TargetDecagon_targets.csv.gz | head -5 | cat -A || true
 
       - name: Run prespecified model-free Gate 1 audit
         run: |
