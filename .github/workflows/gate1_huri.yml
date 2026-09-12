@@ -28,8 +28,7 @@ jobs:
       - name: Acquire published HuRI interaction set
         run: |
           mkdir -p external_data results
-          curl -fL --retry 4 --retry-delay 2 https://www.interactome-atlas.org/data/HuRI.tsv -o external_data/HuRI.tsv \
-            || curl -fL --retry 4 --retry-delay 2 http://www.interactome-atlas.org/data/HuRI.tsv -o external_data/HuRI.tsv
+          curl -fL --retry 4 --retry-delay 2 https://interactome-atlas.org/data/HuRI.tsv -o external_data/HuRI.tsv
           sha256sum external_data/HuRI.tsv | tee results/huri.sha256
           wc -l external_data/HuRI.tsv
           head -5 external_data/HuRI.tsv | cat -A
