@@ -14,6 +14,8 @@ import pandas as pd
 def auc_mw(pos_scores, neg_scores):
     p = np.asarray(pos_scores, float)
     n = np.asarray(neg_scores, float)
+    if len(p) == 0 or len(n) == 0:
+        return float("nan")
     ranks = pd.Series(np.concatenate([p, n])).rank(method="average").to_numpy()
     u = ranks[: len(p)].sum() - len(p) * (len(p) + 1) / 2
     return float(u / (len(p) * len(n)))
@@ -31,16 +33,25 @@ def score(edge, dl, dr):
 
 
 def parse_edges(path: str):
-    d = pd.read_csv(path, sep="\t", compression="infer")
-    if d.shape[1] < 2:
-        d = pd.read_csv(path, compression="infer")
-        if d.shape[1] == 1:
-            z = d.iloc[:, 0].astype(str).str.split("\t", expand=True)
-            d = z
-    if d.shape[1] < 2:
-        raise ValueError(f"Could not parse two endpoint columns from {path}; shape={d.shape}")
-    edges = sorted({(str(a).strip(), str(b).strip()) for a, b in zip(d.iloc[:, 0], d.iloc[:, 1]) if pd.notna(a) and pd.notna(b)})
+    # Canonical SNAP file has a tab-delimited comment/header line but comma-delimited
+    # data rows. Treat '#' as comment and parse the actual edge rows as CSV.
+    d = pd.read_csv(
+        path,
+        compression="infer",
+        comment="#",
+        header=None,
+        names=["drug", "gene"],
+        sep=",",
+        skip_blank_lines=True,
+    )
+    d = d.dropna(subset=["drug", "gene"])
+    edges = sorted({
+        (str(a).strip().replace("\r", ""), str(b).strip().replace("\r", ""))
+        for a, b in zip(d["drug"], d["gene"])
+    })
     edges = [e for e in edges if e[0] and e[1] and e[0] != "nan" and e[1] != "nan"]
+    if len(edges) < 100:
+        raise ValueError(f"Parsed only {len(edges)} edges; expected a large DTI edge list.")
     return edges
 
 
@@ -85,7 +96,6 @@ def one_seed(edges, seed, test_fraction=0.2):
     n_test = max(1, int(round(len(edges) * test_fraction)))
     test = [edges[i] for i in idx[:n_test]]
     train = [edges[i] for i in idx[n_test:]]
-    train_set = set(train)
     all_set = set(edges)
 
     dl = Counter(a for a, _ in train)
@@ -93,11 +103,14 @@ def one_seed(edges, seed, test_fraction=0.2):
     left = sorted({a for a, _ in edges})
     right = sorted({b for _, b in edges})
 
-    # Restrict primary evaluable positives to endpoints observed in training so the
-    # popularity null has a meaningful opportunity to exploit benchmark structure.
     test_seen = [e for e in test if dl.get(e[0], 0) > 0 and dr.get(e[1], 0) > 0]
+    if len(test_seen) < 10:
+        raise ValueError(f"Only {len(test_seen)} test edges have both endpoints observed in training.")
+
     random_neg = sample_nonedges(rng, len(test_seen), left, right, all_set)
-    match_pool = sample_nonedges(rng, min(max(len(test_seen) * 20, 50000), len(left) * len(right) - len(all_set)), left, right, all_set)
+    universe_nonedges = len(left) * len(right) - len(all_set)
+    match_n = min(max(len(test_seen) * 20, 50000), universe_nonedges)
+    match_pool = sample_nonedges(rng, match_n, left, right, all_set)
     mp, mn = match_by_degree(rng, test_seen, match_pool, dl, dr)
 
     auc_random = auc_mw([score(e, dl, dr) for e in test_seen], [score(e, dl, dr) for e in random_neg])
@@ -111,7 +124,7 @@ def one_seed(edges, seed, test_fraction=0.2):
         "n_test_seen_endpoints": len(test_seen),
         "seen_test_fraction": len(test_seen) / len(test),
         "n_degree_matched": len(mp),
-        "matched_fraction": len(mp) / len(test_seen) if test_seen else 0.0,
+        "matched_fraction": len(mp) / len(test_seen),
         "auc_random": auc_random,
         "auc_degree_matched": auc_matched,
         "inflation_auc": auc_random - auc_matched,
