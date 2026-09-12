@@ -33,8 +33,6 @@ def score(edge, dl, dr):
 
 
 def parse_edges(path: str):
-    # Canonical SNAP file has a tab-delimited comment/header line but comma-delimited
-    # data rows. Treat '#' as comment and parse the actual edge rows as CSV.
     d = pd.read_csv(
         path,
         compression="infer",
@@ -70,12 +68,27 @@ def sample_nonedges(rng, n, left, right, blocked):
     return list(out)
 
 
-def match_by_degree(rng, positives, candidate_negatives, dl, dr):
-    pools = defaultdict(list)
-    for e in candidate_negatives:
-        pools[(d_bin(dl.get(e[0], 0)), d_bin(dr.get(e[1], 0)))].append(e)
-    for p in pools.values():
-        rng.shuffle(p)
+def targeted_degree_match(rng, positives, left, right, blocked, dl, dr):
+    left_by_bin = defaultdict(list)
+    right_by_bin = defaultdict(list)
+    for a in left:
+        left_by_bin[d_bin(dl.get(a, 0))].append(a)
+    for b in right:
+        right_by_bin[d_bin(dr.get(b, 0))].append(b)
+
+    signatures = sorted({(d_bin(dl.get(a, 0)), d_bin(dr.get(b, 0))) for a, b in positives})
+    pools = {}
+    for sig in signatures:
+        lb, rb = sig
+        cand = [
+            (a, b)
+            for a in left_by_bin.get(lb, [])
+            for b in right_by_bin.get(rb, [])
+            if (a, b) not in blocked
+        ]
+        rng.shuffle(cand)
+        pools[sig] = cand
+
     used = Counter()
     mp, mn = [], []
     for i in rng.permutation(len(positives)):
@@ -108,10 +121,7 @@ def one_seed(edges, seed, test_fraction=0.2):
         raise ValueError(f"Only {len(test_seen)} test edges have both endpoints observed in training.")
 
     random_neg = sample_nonedges(rng, len(test_seen), left, right, all_set)
-    universe_nonedges = len(left) * len(right) - len(all_set)
-    match_n = min(max(len(test_seen) * 20, 50000), universe_nonedges)
-    match_pool = sample_nonedges(rng, match_n, left, right, all_set)
-    mp, mn = match_by_degree(rng, test_seen, match_pool, dl, dr)
+    mp, mn = targeted_degree_match(rng, test_seen, left, right, all_set, dl, dr)
 
     auc_random = auc_mw([score(e, dl, dr) for e in test_seen], [score(e, dl, dr) for e in random_neg])
     auc_matched = auc_mw([score(e, dl, dr) for e in mp], [score(e, dl, dr) for e in mn]) if mp else float("nan")
@@ -150,6 +160,7 @@ def main():
     summary = {
         "benchmark": "BioSNAP TargetDecagon drug-target interactions",
         "source_url": "https://snap.stanford.edu/biodata/datasets/10015/files/ChG-TargetDecagon_targets.csv.gz",
+        "matching_strategy": "targeted same log2 degree-bin nonedges, degrees computed on training edges only",
         "edge_count": len(edges),
         "left_nodes": len({a for a, _ in edges}),
         "right_nodes": len({b for _, b in edges}),
@@ -168,7 +179,7 @@ def main():
     Path(args.out_json).write_text(json.dumps(summary, indent=2) + "\n")
 
     gate = summary["auc_random_mean"] >= 0.60 and summary["inflation_auc_mean"] >= 0.08 and summary["matched_fraction_mean"] >= 0.50
-    md = f"""# Gate 1 — BioSNAP DTI result\n\n- Edges: **{summary['edge_count']:,}**\n- Drugs: **{summary['left_nodes']:,}**\n- Targets: **{summary['right_nodes']:,}**\n- Degree-only AUC, conventional random negatives: **{summary['auc_random_mean']:.3f} ± {summary['auc_random_sd']:.3f}**\n- Degree-only AUC, degree-matched negatives: **{summary['auc_degree_matched_mean']:.3f} ± {summary['auc_degree_matched_sd']:.3f}**\n- Mean AUC inflation: **{summary['inflation_auc_mean']:.3f}**\n- Mean matched fraction: **{summary['matched_fraction_mean']:.3f}**\n- Gate-1 DTI structural-inflation signal: **{'PASS' if gate else 'FAIL / INCONCLUSIVE'}**\n\nPrespecified operational pass rule for this first external audit: conventional degree-only AUC >= 0.60, AUC inflation >= 0.08, and >= 50% of evaluable test positives degree matched. This rule is an internal project gate, not a universal scientific threshold.\n"""
+    md = f"""# Gate 1 — BioSNAP DTI result\n\n- Edges: **{summary['edge_count']:,}**\n- Drugs: **{summary['left_nodes']:,}**\n- Targets: **{summary['right_nodes']:,}**\n- Degree-only AUC, conventional random negatives: **{summary['auc_random_mean']:.3f} ± {summary['auc_random_sd']:.3f}**\n- Degree-only AUC, targeted degree-matched negatives: **{summary['auc_degree_matched_mean']:.3f} ± {summary['auc_degree_matched_sd']:.3f}**\n- Mean AUC inflation: **{summary['inflation_auc_mean']:.3f}**\n- Mean matched fraction: **{summary['matched_fraction_mean']:.3f}**\n- Mean evaluable seen-endpoint fraction: **{summary['seen_test_fraction_mean']:.3f}**\n- Gate-1 DTI structural-inflation signal: **{'PASS' if gate else 'FAIL / INCONCLUSIVE'}**\n\nMatching uses nonedges drawn from the same prespecified log2 degree-bin pair as each positive test edge, with endpoint degrees computed from training edges only. The internal pass rule is conventional degree-only AUC >= 0.60, AUC inflation >= 0.08, and >= 50% matching coverage.\n"""
     Path(args.out_md).write_text(md)
     print(json.dumps(summary, indent=2))
     print(md)
