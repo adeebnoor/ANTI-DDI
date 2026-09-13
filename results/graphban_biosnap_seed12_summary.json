@@ -1,0 +1,18 @@
+{
+  "seed": "12",
+  "n_train_rows": 21971,
+  "n_train_positives": 11117,
+  "n_test_rows": 2747,
+  "n_test_positives": 1371,
+  "graphban_auc_conventional": 0.9974868751378217,
+  "degree_only_auc_conventional": 0.8439946334368055,
+  "match_replicates": 100,
+  "matching_positive_coverage_mean": 0.3311451495258936,
+  "graphban_auc_matched_mean": 0.9963566632381764,
+  "graphban_auc_matched_sd": 0.00016022110908183427,
+  "graphban_auc_matched_min": 0.9958372955035029,
+  "graphban_auc_matched_max": 0.9967202934270023,
+  "graphban_auc_drop_mean": 0.0011302118996453503,
+  "degree_only_auc_matched_mean": 0.509410695918803,
+  "degree_only_auc_drop_mean": 0.3345839375180025
+}
