@@ -66,6 +66,21 @@ jobs:
           test -s figures/generated/Figure4_chembl_frontier.png
           ls -lh submission/generated figures/generated
 
+      - name: Publish downloadable pre-submission package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Science-pre-submission-package
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            submission/generated/*.docx
+            submission/SCIENCE_CTS_METADATA.md
+            submission/RELATED_WORK_DISCLOSURE.md
+            submission/FILE_MANIFEST.md
+            figures/generated/*.png
+            figures/generated/*.pdf
+            figures/source_data_main.csv
+
       - name: Commit generated submission package
         run: |
           git config user.name 'github-actions[bot]'
