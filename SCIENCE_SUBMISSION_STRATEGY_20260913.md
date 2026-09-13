@@ -19,6 +19,20 @@ The paper should therefore sell a scientific consequence, not a metric correctio
 
 The AAAS Science Content Tracking System (CTS) is the active manuscript-management portal: `https://cts.sciencemag.org/`. It supports new submissions, continuing an incomplete submission and tracking a submitted manuscript.
 
+The current CTS submission tutorial exposes the practical sequence:
+
+1. **New Submission** and select the correct journal. The tutorial warns that the journal cannot be changed later within that submission.
+2. Read the submission requirements and accept the AAAS terms and conditions.
+3. Enter the author grid and identify the first author.
+4. Enter manuscript metadata.
+5. Enter funding information (including an explicit no-funding/not-listed path where applicable).
+6. Select subject area(s).
+7. Add suggested reviewers and excluded reviewers if desired; the tutorial marks this step as optional.
+8. Upload documents. The manuscript itself is a required upload and the CTS tutorial accepts it as **.docx or .pdf**.
+9. Review all required fields and submit.
+
+We should therefore prepare the portal metadata, subject-area positioning, reviewer/exclusion list and disclosure language **before** opening the final submission rather than making these decisions ad hoc in CTS.
+
 Science consolidated original research into the **Research Article** category in 2023, discontinuing the shorter Reports category. The editorial description at that change indicated a typical Research Article of roughly five printed pages, commonly about **2,000–3,000 words, 3–5 figures and ~50 references**. Treat these as design targets rather than immutable technical limits until the live author-instructions page is checked at final upload.
 
 Current author-instructions page: `https://www.science.org/content/page/instructions-preparing-initial-manuscript`  
@@ -29,7 +43,7 @@ The initial manuscript should be built as one coherent main file with figures/ta
 ## 3. What the editorial screen must understand in <2 minutes
 
 ### Title
-Do not lead with “benchmark,” “degree matching,” “link prediction,” “negative sampling,” “RIDI,” or a model name unless needed. The consequence must dominate.
+Do not lead with “degree matching,” “link prediction,” “negative sampling,” “RIDI,” or a model name. If “benchmark” remains in the title, it must immediately resolve to the discovery consequence.
 
 Preferred title:
 
@@ -201,7 +215,8 @@ Before CTS submission, require:
 - competing-interests statement;
 - related-manuscript disclosure/firewall for the separate Nature/RIDI and Anti-DDI work;
 - suggested reviewers selected for biomedical network science + AI evaluation, avoiding close collaborators and direct conflicts;
-- concise cover letter.
+- concise cover letter;
+- prewritten CTS metadata: title, author order, funding, subject areas and reviewer/exclusion information.
 
 Preprints are compatible with AAAS policy when placed in recognized preprint repositories such as bioRxiv/arXiv/ChemRxiv/medRxiv; do not distribute other manuscript versions broadly without checking the live policy.
 
