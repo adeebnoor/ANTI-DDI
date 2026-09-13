@@ -1,0 +1,21 @@
+{
+  "benchmark": "BioSNAP TargetDecagon DTI",
+  "architecture": "leakage-free GraphBAN-style transductive GraphSAGE + ChemBERTa + ESM-1b",
+  "mapping_edge_fraction": 0.9968432316746924,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "auc_random_mean": 0.9974486062198139,
+  "auc_random_sd": 0.00036229836878275536,
+  "auc_matched_mean": 0.9418169178678563,
+  "auc_matched_sd": 0.006175727821776184,
+  "auc_drop_mean": 0.05563168835195768,
+  "auprc_random_mean": 0.9977357289564316,
+  "auprc_matched_mean": 0.9555623472757274,
+  "match_fraction_mean": 0.5880116640225057,
+  "heldout_edges_in_message_passing": false,
+  "epochs": 20,
+  "hidden_dim": 256
+}
