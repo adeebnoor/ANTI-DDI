@@ -1,0 +1,65 @@
+name: RIDI Nature tabular basis v2
+
+on:
+  push:
+    branches: [ridi-nature-attribution-v1]
+    paths:
+      - 'experiments/ridi_nature_tabular_basis_v2/**'
+      - '.github/workflows/ridi_nature_tabular_basis_v2.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'experiments/ridi_nature_tabular_basis_v2/**'
+      - '.github/workflows/ridi_nature_tabular_basis_v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXP: experiments/ridi_nature_tabular_basis_v2
+
+jobs:
+  tabular-basis-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen environment
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install numpy==2.1.3 pandas==2.2.3 scipy==1.14.1 scikit-learn==1.5.2
+          python - <<'PY'
+          import numpy,pandas,scipy,sklearn
+          assert numpy.__version__ == '2.1.3'
+          assert pandas.__version__ == '2.2.3'
+          assert scipy.__version__ == '1.14.1'
+          assert sklearn.__version__ == '1.5.2'
+          PY
+      - name: Acquire commit-pinned Adult files
+        run: |
+          set -euo pipefail
+          mkdir -p _data/e_tabular_v2
+          curl --fail --location --retry 5 --retry-all-errors 'https://raw.githubusercontent.com/jbrownlee/Datasets/d20fcb6402ae34e653d4513b00f39257bb37ed7f/adult-train.csv' -o _data/e_tabular_v2/adult-train.csv
+          curl --fail --location --retry 5 --retry-all-errors 'https://raw.githubusercontent.com/jbrownlee/Datasets/d20fcb6402ae34e653d4513b00f39257bb37ed7f/adult-test.csv' -o _data/e_tabular_v2/adult-test.csv
+      - name: Execute frozen v2 experiment
+        run: |
+          set -euo pipefail
+          python "$EXP/run_tabular_basis_v2.py" --train _data/e_tabular_v2/adult-train.csv --test _data/e_tabular_v2/adult-test.csv --out-dir RIDI_E_TABULAR_BASIS_V2_RESULTS
+          cat RIDI_E_TABULAR_BASIS_V2_RESULTS/VERDICT.md
+      - name: Add execution provenance
+        if: always()
+        run: |
+          mkdir -p RIDI_E_TABULAR_BASIS_V2_RESULTS
+          printf 'repository=%s\ncommit=%s\nrun_id=%s\nrun_attempt=%s\nworkflow=%s\n' "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_WORKFLOW" > RIDI_E_TABULAR_BASIS_V2_RESULTS/EXECUTION_PROVENANCE.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: RIDI_E_TABULAR_BASIS_V2_RESULTS
+          path: RIDI_E_TABULAR_BASIS_V2_RESULTS/
+          if-no-files-found: error
+          retention-days: 90
