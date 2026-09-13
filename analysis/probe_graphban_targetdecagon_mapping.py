@@ -76,14 +76,13 @@ def uniprot_gene_map(genes):
             entry=str(to.get('entryType') or '')
             reviewed=('reviewed' in entry.lower() and 'unreviewed' not in entry.lower())
             seq=(to.get('sequence') or {}).get('value') if isinstance(to.get('sequence'),dict) else None
-            cand[gid].append({'accession':str(acc),'reviewed':reviewed,'has_sequence':bool(seq)})
+            cand[gid].append({'accession':str(acc),'reviewed':reviewed,'sequence':str(seq) if seq else ''})
         link=r.headers.get('Link',''); nxt=None
         if 'rel="next"' in link: nxt=link.split('<',1)[1].split('>',1)[0]
         url=nxt
     chosen={}; multiplicity={}
     for g,rows in cand.items():
-        # deterministic preference: reviewed, then sequence availability, then accession.
-        rows=sorted(rows,key=lambda x:(not x['reviewed'],not x['has_sequence'],x['accession']))
+        rows=sorted(rows,key=lambda x:(not x['reviewed'],not bool(x['sequence']),x['accession']))
         chosen[g]=rows[0]
         multiplicity[g]=len(rows)
     return chosen,multiplicity
@@ -92,22 +91,24 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--input',required=True); ap.add_argument('--out-prefix',required=True); a=ap.parse_args()
     E=parse(a.input); drugs=sorted({x for x,_ in E}); genes=sorted({y for _,y in E})
     sm=pubchem_smiles(drugs); gm,mult=uniprot_gene_map(genes)
-    mapped_edges=[e for e in E if e[0] in sm and e[1] in gm]
+    gm_seq={g:x for g,x in gm.items() if x.get('sequence')}
+    mapped_edges=[e for e in E if e[0] in sm and e[1] in gm_seq]
     summary={
       'benchmark':'BioSNAP TargetDecagon DTI','edges':len(E),'drugs':len(drugs),'genes':len(genes),
       'mapped_drugs':len(sm),'mapped_drug_fraction':len(sm)/len(drugs),
       'mapped_genes':len(gm),'mapped_gene_fraction':len(gm)/len(genes),
+      'mapped_genes_with_sequence':len(gm_seq),'mapped_gene_with_sequence_fraction':len(gm_seq)/len(genes),
       'mapped_positive_edges':len(mapped_edges),'mapped_positive_edge_fraction':len(mapped_edges)/len(E),
       'genes_with_multiple_human_uniprot_mappings':sum(v>1 for v in mult.values()),
       'selected_reviewed_genes':sum(bool(x['reviewed']) for x in gm.values()),
       'mapping_gate_threshold':0.90,
       'mapping_gate_pass':len(mapped_edges)/len(E)>=0.90,
-      'note':'Mapping-only preflight; no model outcomes inspected.'
+      'note':'Mapping-only preflight; positive-edge gate requires both SMILES and an actual human UniProt sequence. No model outcomes inspected.'
     }
     p=Path(a.out_prefix); p.parent.mkdir(parents=True,exist_ok=True)
     pd.DataFrame([{'drug':d,'smiles':sm[d]} for d in sorted(sm)]).to_csv(str(p)+'_drug_map.csv',index=False)
     pd.DataFrame([{'gene':g,**gm[g],'n_human_mappings':mult.get(g,0)} for g in sorted(gm)]).to_csv(str(p)+'_gene_map.csv',index=False)
     Path(str(p)+'_summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-    md=f"""# GraphBAN TargetDecagon mapping gate\n\n- Positive edges: **{len(E):,}**\n- Drug mapping: **{len(sm)}/{len(drugs)} ({len(sm)/len(drugs):.1%})**\n- Gene mapping: **{len(gm)}/{len(genes)} ({len(gm)/len(genes):.1%})**\n- Positive-edge feature mapping: **{len(mapped_edges)}/{len(E)} ({len(mapped_edges)/len(E):.1%})**\n- Predeclared >=90% edge-coverage gate: **{'PASS' if summary['mapping_gate_pass'] else 'FAIL'}**\n\nThis is a mapping-only preflight. It contains no GraphBAN performance result.\n"""
+    md=f"""# GraphBAN TargetDecagon mapping gate\n\n- Positive edges: **{len(E):,}**\n- Drug mapping: **{len(sm)}/{len(drugs)} ({len(sm)/len(drugs):.1%})**\n- Human UniProt mapping: **{len(gm)}/{len(genes)} ({len(gm)/len(genes):.1%})**\n- Human UniProt mapping with sequence: **{len(gm_seq)}/{len(genes)} ({len(gm_seq)/len(genes):.1%})**\n- Positive-edge feature mapping: **{len(mapped_edges)}/{len(E)} ({len(mapped_edges)/len(E):.1%})**\n- Predeclared >=90% edge-coverage gate: **{'PASS' if summary['mapping_gate_pass'] else 'FAIL'}**\n\nThis is a mapping-only preflight. It contains no GraphBAN performance result.\n"""
     Path(str(p)+'.md').write_text(md); print(md)
 if __name__=='__main__': main()
