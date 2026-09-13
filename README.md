@@ -1,123 +1,98 @@
-# Anti-DDI v3.0.1 — evidence states for drug non-interaction
+# Benchmark design redirects biomedical discovery
 
-**797 audited pair records · 538 T1/T2 higher-support benchmark candidates · 8 targeted human/regulatory illustrations**
+**Pre-submission research branch for a planned _Science_ Research Article**  
+**Status:** core results frozen; one contemporary-model robustness gate (leakage-free GraphBAN challenge) is still running.  
+**This branch is not a statement of acceptance, peer review, or publication.**
 
-Anti-DDI starts from one design principle: **a missing edge is an observation about a database; an Anti-DDI state is a claim about evidence.** Drug–drug interaction (DDI) informatics represents reasons for concern explicitly, but evidence against a clinically meaningful interaction is often collapsed with sparse evidence, incomplete coverage, or simple absence. Anti-DDI keeps those states separate.
+> **Central result:** the benchmark used to select a biomedical AI model can change which model wins, which biological hypotheses reach the front of the experimental queue, and which later or independent evidence is concentrated among those priorities.
 
-> **DDI-supported ≠ unresolved ≠ Anti-DDI candidate**
+## Why this branch exists
 
-The resource is for research and decision-support assurance. It is **not** a universal safety list.
+The repository default branch (`main`) remains the independent **Anti-DDI v3.0.1** resource. This branch (`science-structural-shortcuts`) contains a separate research program on **benchmark-induced scientific decision changes in biomedical AI**. The separation is intentional for provenance, related-work disclosure, and reproducibility.
 
-## Validation notice
+The paper is not presented as a new discovery of degree bias. Prior work has established degree/rich-node bias, target-prior bias, data leakage, and other benchmark artifacts. The contribution tested here is the downstream decision chain:
 
-A post-analysis adversarial audit on 20 August 2026 identified label leakage in an experimental four-arm text-classifier/RIDI demonstration that had briefly been documented in v3.0.0. The associated efficacy and safety claims are withdrawn and are **not evidence for this resource**. See [`VALIDATION_NOTICE_20260820.md`](VALIDATION_NOTICE_20260820.md). The audited dataset, evidence tiers, graph audit, label exclusions and clinical-anchor source table are unaffected.
+**benchmark construction → model identity → hypothesis identity → later / independent evidence**
 
-## What this resource provides
+## Main evidence
 
-| File | Rows | Intended use |
-|---|---:|---|
-| `data/antiddi_v3_dataset.csv` | 797 | Complete audit/evidence-state table, including excluded and unresolved records |
-| `data/antiddi_v3_benchmark.csv` | 538 | Default research benchmark candidates: T1 + T2 only |
-| `data/degree_bias_atc5_replicates.csv` | 20 | Reproducible ATC5 structural-bias output |
-| `data/degree_bias_atc5_summary.json` | — | Frozen summary of the ATC5 structural-bias analysis |
-| `data/figure2_vertex_cover_degrees.csv` | 13 | Source data for the 13-drug vertex-cover figure |
-| `data/FROZEN_REFERENCE_MANIFEST.md` | — | Row count, derivation and SHA-256 of the frozen 8,094-pair ATC5 positive reference |
-| `data/clinical_anchor_pairs.csv` | 8 | Targeted illustrative human/regulatory source anchors; not a validation cohort |
-| `data/antiddi_v2_dataset.csv` | 797 | Immutable v2 audit table retained for historical reproducibility |
-
-The exact frozen `goldd2_atc5_positive_reference.csv` is included in the manuscript Supplementary Code and Data archive; its SHA-256 is recorded in `data/FROZEN_REFERENCE_MANIFEST.md`. The original `data/paper5_split_manifest.csv` is retained only as provenance for the superseded classifier experiment; it is not a validation asset.
-
-## Evidence-state semantics
-
-| State | Interpretation | Default use |
+| Layer | Frozen result | Interpretation |
 |---|---|---|
-| `ANTI_DDI_CANDIDATE_HIGHER_SUPPORT` | T1/T2 candidate with greater observation opportunity under the resource rules | Default research benchmark candidate |
-| `ANTI_DDI_CANDIDATE_LIMITED` | T3 candidate with limited observation opportunity | Sensitivity analysis only |
-| `STRUCTURAL_CONTROL_ONLY` | Trivial/inert structural control | Exclude from default benchmark |
-| `UNRESOLVED` | Too little co-exposure to support a negative claim | Do not label negative |
-| `POSITIVE_CONCERN_EXCLUDED` | Clinical or regulatory concern identified | Never use as Anti-DDI |
+| Structural-only signal | Degree-only AUC falls from 0.983→0.620 (DTI), 0.928→0.513 (HuRI PPI), 0.871→0.519 (compound–disease), 0.876→0.513 (disease–gene) after structural matching | conventional sampled-unknown evaluation can reward structural observability |
+| Model selection | DTI and historical PPI switch from NeuralMF under conventional evaluation to SVD after structural neutralization; compound–disease is a non-reversal control | benchmark choice can change the winning model |
+| Hypothesis identity | selected-model ensembles disagree on 100% of DTI top-100 and 99% of PPI top-100 hypotheses, far above within-family instability | model-selection reversals change what biology is prioritized |
+| Later evidence | on the same 70,041,100 historical BioGRID candidate pairs, SVD recovers 522 later-added relations in top-50k vs 181 for NeuralMF | benchmark-selected models differ in later evidence recovery |
+| Independent evidence | in unopened ChEMBL 37 evidence, SVD recovers 3/5/6 supported DTI candidates at top 100/500/1000 vs 0/0/2 for NeuralMF | the experimental frontier changes outside the selection dataset |
 
-**T1/T2 does not mean clinically proven non-interacting or safe.** It encodes greater observation opportunity under the stated statistical setting. Direct named-pair human or regulatory evidence is carried separately. A T1/T2 row should therefore be described as a **higher-support Anti-DDI candidate**, not as a clinically validated negative.
+The ChEMBL advantage does **not** persist at broad cutoffs; that boundary is retained in the paper. Later BioGRID additions are treated as later evidence, not unbiased biological truth.
 
-This framing yields three operational rules:
+## Paper architecture
 
-1. database absence is not a negative label;
-2. unresolved evidence remains explicit rather than being forced into the negative class; and
-3. credible positive clinical/regulatory evidence overrides any de-escalating interpretation.
+The planned main paper is intentionally compressed to four figures:
 
-## Audit and structure
+1. **A benchmark can reward structural observability.**
+2. **Benchmark choice changes model identity and hypothesis identity.**
+3. **Historical benchmark choice changes later evidence recovery.**
+4. **Independent evidence differs at the drug–target experimental frontier.**
 
-The retracted predecessor file contained 827 rows. The current audit identified 902 defect instances affecting 782 rows and reduced the file to 797 distinct unordered pairs over 161 drug names. A 13-drug greedy vertex cover touches all 797 pairs; the remaining 148 drugs form an independent set. This structure is a major benchmark confounder and is disclosed rather than hidden.
+Specialist diagnostics, negative controls, the disease–gene instability boundary, Anti-DDI evidence-state sensitivity, and the contemporary GraphBAN challenge are placed in Supplementary / Extended Data rather than allowed to dilute the central general-science story.
 
-The author of the current resource was a co-author and corresponding author of the retracted predecessor article. The predecessor is used only as an audit/lineage object; current evidence states are not inherited from its labels. See [`DISCLOSURE_retraction.md`](DISCLOSURE_retraction.md).
+## Reproduce the evidence
 
-## Observation-opportunity tiers
+Start here:
 
-For each pair the resource records FAERS co-report count and a minimum detectable reporting-odds-ratio calculation under a stated design parameter (`p0=0.01`, two-sided alpha 0.05, power 0.80). This is a **statistical opportunity measure**, not proof of non-interaction and not a clinical safety estimate. Sensitivity analysis shows that varying `p0` from 0.001 to 0.05 changes the T1/T2 split but leaves the combined T1+T2 count at 538 (`data/p0_sensitivity.csv`).
+- [`SCIENCE_PROJECT.md`](SCIENCE_PROJECT.md) — original prespecified hypotheses and gates; intentionally not rewritten after outcomes.
+- [`RESULTS_CHECKPOINT_20260913.md`](RESULTS_CHECKPOINT_20260913.md) — canonical outcome checkpoint.
+- [`SCIENCE_SEND_DECISION.md`](SCIENCE_SEND_DECISION.md) — send / hold gate matrix.
+- [`SCIENCE_SUBMISSION_STRATEGY_20260913.md`](SCIENCE_SUBMISSION_STRATEGY_20260913.md) — _Science_-specific editorial strategy.
+- [`LITERATURE_GAP.md`](LITERATURE_GAP.md) — novelty boundary and closest prior art.
+- [`BENCHMARK_MANIFEST.md`](BENCHMARK_MANIFEST.md) and [`CHECKSUMS.sha256`](CHECKSUMS.sha256) — provenance and hashes.
+- [`results/`](results/) — frozen seed-level and summary outputs.
+- [`analysis/`](analysis/) — executable analyses.
+- [`submission/`](submission/) — cover letter, CTS metadata, supplementary draft, file manifest, and generated package workflow.
+- [`figures/`](figures/) — main-figure source data and reproducible plotting code.
 
-The historical FAERS query metadata preserve the denominator of 20,328,575 reports but not a source-export date. That missing timestamp is a limitation and is not reconstructed retrospectively.
+## Main manuscript
 
-## Reproducible structural-bias diagnostic
+Current editorial-fit manuscript source:
 
-`analysis/run_degree_bias_atc5.py` asks whether a popularity-only score can distinguish positives from nominal negatives because of drug/class degree rather than pair-specific pharmacology.
+- [`manuscript/SCIENCE_MANUSCRIPT_v0.7_PRE_SUBMISSION.md`](manuscript/SCIENCE_MANUSCRIPT_v0.7_PRE_SUBMISSION.md)
 
-Using the frozen 8,094-pair GoldD2-derived ATC level-5 positive reference and ATC5 projections of the T1/T2 Anti-DDI candidates:
+The generated DOCX is built from the same source by GitHub Actions and is deliberately labeled **PRE-SUBMISSION** until the final GraphBAN robustness result is frozen and inserted without changing its predeclared criterion.
 
-- 1,080 unique curated ATC5 class pairs were generated;
-- 88 class pairs overlapping the positive reference were excluded;
-- 992 curated ATC5 class pairs remained;
-- across 20 seeds, popularity-only AUC was **0.908 ± 0.006** against random unlabelled negatives and **0.900 ± 0.005** against curated Anti-DDI class pairs;
-- after degree matching, AUC fell to **0.501 ± 0.004**.
+## Contemporary-model gate
 
-The conceptual point is not that a better classifier was built. It is that **a benchmark can appear pharmacologically informative when it is structurally predictable**. Degree/popularity controls are therefore part of the evidence design, not merely a modeling detail.
+A leakage-free GraphBAN-style challenge is being run on frozen BioSNAP TargetDecagon. Feature mapping passed the prespecified gate at **18,631/18,690 positive edges (99.7%)**. Held-out positive edges are excluded from message passing. The direction of the result does not determine whether it is reported:
 
-This is a **structural-bias diagnostic at ATC5 class level**, not clinical validation of any drug pair.
+- sensitivity extends the architectural evidence;
+- robustness becomes an explicit model-specific boundary;
+- technical non-executability is reported rather than replaced by a test-edge-informed protocol.
 
-Reproduce after placing the checksum-verified frozen CSV from the Supplementary Code and Data archive at `data/goldd2_atc5_positive_reference.csv`:
+See [`CONTEMPORARY_MODEL_CHALLENGE.md`](CONTEMPORARY_MODEL_CHALLENGE.md) and [`GRAPHBAN_PROTOCOL_AMENDMENT_20260913.md`](GRAPHBAN_PROTOCOL_AMENDMENT_20260913.md).
 
-```bash
-python analysis/run_degree_bias_atc5.py \
-  --positives data/goldd2_atc5_positive_reference.csv \
-  --antiddi data/antiddi_v2_dataset.csv \
-  --out /tmp/degree_bias_atc5_replicates.csv \
-  --summary /tmp/degree_bias_atc5_summary.json
-```
+## Boundaries we will not cross
 
-The generated output should match the shipped `data/degree_bias_atc5_replicates.csv` and `data/degree_bias_atc5_summary.json`.
+This project does **not** claim that:
 
-## Structured-label screen and clinical anchoring
+- degree bias is newly discovered;
+- biomedical AI generally learns no biology;
+- structural neutralization is universally optimal;
+- SVD is the universally best biological model;
+- persistent unknown relations are true negatives;
+- later BioGRID additions are an unbiased truth set;
+- ChEMBL favors the neutralized-selected model at every cutoff;
+- Anti-DDI evidence state has been causally isolated;
+- the upstream GraphBAN transductive evaluation is leakage-free.
 
-The shipped structured-label screen contains five positive interaction signals: three were assigned `EXCLUDED_label` and two were already clinically excluded. Four rows contain explicit non-interaction statements. This screen is a contradiction safeguard, not a comprehensive drug-information compendium review.
+## Related projects
 
-Eight retained T1/T2 candidates are documented as **targeted illustrative anchors** because named-pair human clinical-pharmacology or regulatory sources reported no clinically meaningful interaction or no clinically relevant effect. They are outcome-selected and hub-concentrated, so they are **not** a diagnostic-accuracy sample or a population concordance estimate. Three were already identified by the structured-label screen; five add direct source anchoring not captured by that screen. See `data/clinical_anchor_pairs.csv`.
+- `main` branch: **Anti-DDI v3.0.1**, an evidence-state resource for drug non-interaction research.
+- The separate RIDI / allocation-identity manuscript is not part of this paper's evidence base. Its EPSS/COMPAS analyses, theorem, and primary examples are not reused here.
 
-## Recommended use
+## Citation and release status
 
-1. Use `data/antiddi_v3_benchmark.csv` only as a research benchmark candidate set.
-2. Preserve evidence tiers and report structural degree/popularity controls.
-3. Never convert `UNRESOLVED` rows into negatives.
-4. Never use excluded clinical/label rows as negatives.
-5. Do not describe dataset membership as authorization to co-prescribe or suppress an alert.
-6. Report the exact release/commit and checksum.
-7. Validate any downstream decision system independently; the superseded classifier experiment is not validation evidence.
-
-## Reproducibility
-
-```bash
-python validate.py
-python build_v3.py
-python semantic_harden_v3.py
-python validate_v3.py
-```
-
-The ATC5 structural diagnostic additionally requires the checksum-verified frozen positive-reference CSV identified in `data/FROZEN_REFERENCE_MANIFEST.md`.
+This branch is a **pre-submission reproducibility package**, not a published article. Until a persistent archival release is minted, cite the exact branch/commit used. [`CITATION.cff`](CITATION.cff) and [`.zenodo.json`](.zenodo.json) on this branch describe the Science-paper reproducibility package rather than the Anti-DDI dataset release.
 
 ## License
 
-- Code: MIT
-- Data and documentation: CC BY 4.0
-- Third-party identifiers/source material remain subject to their original terms.
-
-## Clinical boundary
-
-Anti-DDI is a research evidence framework. It is **not a clinical safety list** and does not substitute for current drug-information sources, clinician/pharmacist judgment, patient context, dose, route, timing, or monitoring.
+Code remains under the repository software license; dataset/source-material terms remain governed by their original licenses. External datasets (BioSNAP, HuRI, Hetionet, BioGRID, ChEMBL and others) are not relicensed here.
