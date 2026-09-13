@@ -1,7 +1,7 @@
 {
-  "title": "Anti-DDI v3: an evidence framework and benchmark resource for drug non-interaction",
-  "upload_type": "dataset",
-  "description": "Anti-DDI v3 contains 797 audited drug-pair evidence records, including 538 default T1/T2 evidence-supported Anti-DDI benchmark records, a frozen Paper 5 RIDI split, and eight post-confirmatory human clinical-pharmacology anchors. The resource is for research and benchmarking, not prescribing.",
+  "title": "Benchmark design redirects biomedical discovery: reproducibility package",
+  "upload_type": "software",
+  "description": "Pre-submission reproducibility package for a biomedical AI benchmarking study linking benchmark construction to model selection, hypothesis identity, later BioGRID evidence, and independent ChEMBL evidence. The package includes frozen protocols, negative controls, seed-level outputs, provenance, source-data tables, and a leakage-free contemporary-model challenge. It is not a statement of peer review or acceptance and does not claim universal superiority of structural neutralization.",
   "creators": [
     {
       "name": "Noor, Adeeb",
@@ -10,14 +10,17 @@
     }
   ],
   "keywords": [
-    "Anti-DDI",
-    "drug-drug interaction",
-    "drug non-interaction",
-    "clinical decision support",
-    "RIDI",
-    "pharmacovigilance",
-    "clinical pharmacology"
+    "biomedical artificial intelligence",
+    "benchmark design",
+    "link prediction",
+    "network biology",
+    "model selection",
+    "hypothesis prioritization",
+    "drug-target interaction",
+    "protein-protein interaction",
+    "structural bias",
+    "reproducibility"
   ],
-  "version": "3.0.0",
+  "version": "pre-submission-2026.09.13",
   "access_right": "open"
 }
