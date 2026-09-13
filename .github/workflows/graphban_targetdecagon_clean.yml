@@ -5,6 +5,7 @@ on:
     branches: [science-structural-shortcuts]
     paths:
       - analysis/run_graphban_targetdecagon_clean.py
+      - analysis/probe_graphban_targetdecagon_mapping.py
       - .github/workflows/graphban_targetdecagon_clean.yml
       - GRAPHBAN_PROTOCOL_AMENDMENT_20260913.md
       - results/graphban_targetdecagon_mapping_drug_map.csv
@@ -34,11 +35,13 @@ jobs:
           mkdir -p external_data results
           curl -fL --retry 4 --retry-delay 2 https://snap.stanford.edu/biodata/datasets/10015/files/ChG-TargetDecagon_targets.csv.gz -o external_data/ChG-TargetDecagon_targets.csv.gz
           sha256sum external_data/ChG-TargetDecagon_targets.csv.gz | tee results/graphban_clean_targetdecagon_input.sha256
-      - name: Ensure frozen mapping files exist
+      - name: Materialize or verify frozen mapping gate
         run: |
-          test -s results/graphban_targetdecagon_mapping_drug_map.csv
-          test -s results/graphban_targetdecagon_mapping_gene_map.csv
-          test -s results/graphban_targetdecagon_mapping_summary.json
+          if [ ! -s results/graphban_targetdecagon_mapping_drug_map.csv ] || [ ! -s results/graphban_targetdecagon_mapping_gene_map.csv ] || [ ! -s results/graphban_targetdecagon_mapping_summary.json ]; then
+            python analysis/probe_graphban_targetdecagon_mapping.py \
+              --input external_data/ChG-TargetDecagon_targets.csv.gz \
+              --out-prefix results/graphban_targetdecagon_mapping
+          fi
           python - <<'PY'
           import json
           x=json.load(open('results/graphban_targetdecagon_mapping_summary.json'))
@@ -56,11 +59,15 @@ jobs:
             --out-prefix results/graphban_targetdecagon_clean \
             --seeds 0,1,2
           cat results/graphban_targetdecagon_clean.md
-      - name: Commit frozen S6 outputs
+      - name: Commit frozen S6 outputs and mapping provenance
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add results/graphban_clean_targetdecagon_input.sha256 \
+                  results/graphban_targetdecagon_mapping_drug_map.csv \
+                  results/graphban_targetdecagon_mapping_gene_map.csv \
+                  results/graphban_targetdecagon_mapping_summary.json \
+                  results/graphban_targetdecagon_mapping.md \
                   results/graphban_targetdecagon_clean_replicates.csv \
                   results/graphban_targetdecagon_clean_summary.json \
                   results/graphban_targetdecagon_clean.md
