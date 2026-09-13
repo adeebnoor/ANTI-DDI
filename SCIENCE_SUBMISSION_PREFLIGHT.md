@@ -14,7 +14,7 @@ The submission pitch is therefore not:
 
 It is:
 
-> Biomedical AI benchmarks can determine which model scientists choose, which biological hypotheses they pursue, and which later-supported relationships those choices recover.
+> Biomedical AI benchmarks can determine which model scientists choose, which biological hypotheses they pursue, and where independent or later biological evidence is concentrated among the hypotheses tested first.
 
 ## Current CTS submission path verified
 
@@ -24,10 +24,7 @@ The submission tutorial linked through the system indicates that an initial Scie
 
 - all authors' names, addresses and email addresses;
 - manuscript title and abstract in text form for entry into the portal;
-- critical cover-letter information, including:
-  - the main point of the paper;
-  - its relationship to prior work;
-  - colleagues who have reviewed the manuscript;
+- critical cover-letter information, including the main point of the paper, its relationship to prior work, and colleagues who have reviewed the manuscript;
 - a cover-letter file;
 - manuscript text/references with figures and captions embedded, with Word preferred by the tutorial and PDF also supported there;
 - a combined PDF containing the main manuscript and supplementary materials;
@@ -41,10 +38,10 @@ Because portal requirements can change, this checklist does **not** freeze old w
 2. **Conceptual failure:** benchmark construction is not passive; structural opportunity can influence which model is declared best.
 3. **Scientific consequence:** changing the benchmark changes the model and therefore the identity of experimental hypotheses.
 4. **Cross-domain generality:** the structural mechanism is reproduced across DTI, PPI, compound–disease and disease–gene relations.
-5. **Decision replication:** DTI and PPI show very large hypothesis-identity changes beyond within-model training noise.
-6. **External consequence:** a frozen BioGRID historical test links benchmark selection to later-evidence recovery on the same complete candidate universe.
-7. **Independent replication:** ChEMBL DTI is the predeclared non-PPI external test and must be resolved before submission.
-8. **Modern-model challenge:** GraphBAN is the predeclared contemporary architecture challenge.
+5. **Decision replication:** DTI and PPI show very large hypothesis-identity changes beyond within-model training noise; disease–gene provides supportive ensemble evidence with an explicit instability boundary.
+6. **Temporal consequence:** on the identical 70,041,100-pair historical PPI universe, the neutralized-selected SVD recovered 522 later-added BioGRID relations at Top-50,000 versus 181 for the conventional winner; paired-bootstrap SVD-minus-NeuralMF recall differences were positive at every prespecified cutoff.
+7. **Independent non-PPI replication:** in frozen ChEMBL 37 validation, SVD recovered 3/5/6 supported unknown DTI relations at Top-100/500/1,000 versus 0/0/2 for NeuralMF, with the important boundary that the advantage did not persist at broad cutoffs.
+8. **Modern-model challenge:** GraphBAN is the frozen contemporary architecture challenge and remains the major unresolved empirical send gate.
 
 ## Cover-letter architecture
 
@@ -54,11 +51,11 @@ State one broad scientific consequence in plain language. No AUC, no degree bins
 
 ### Paragraph 2 — what we show
 
-Compress the causal chain:
+Compress the decision chain:
 
 **structure-only signal → model-rank reversal → hypothesis-identity change → later/independent evidence consequence.**
 
-Use only 2–3 decisive numbers.
+Use only 2–3 decisive numbers. Favor one hypothesis-identity number and one external-evidence number over a metric catalogue.
 
 ### Paragraph 3 — novelty versus closest prior work
 
@@ -66,7 +63,7 @@ Explicitly acknowledge that rich-node/degree bias, target-prior bias and tempora
 
 ### Paragraph 4 — rigor
 
-Mention predeclared gates, frozen historical snapshots, identical candidate universes, ensemble stability controls, negative/non-reversal controls, external-source validation, and reproducible code/data checksums.
+Mention predeclared gates, frozen historical snapshots, identical candidate universes, ensemble stability controls, negative/non-reversal controls, external-source validation, paired uncertainty, and reproducible code/data checksums.
 
 ### Paragraph 5 — broad readership
 
@@ -80,14 +77,32 @@ State related manuscripts/resources transparently, especially Anti-DDI, and expl
 
 - Title should state the scientific consequence, not the method.
 - Abstract opens with the broad scientific decision problem and uses a concise “Here we show” pivot.
-- Main text should tell one escalating story rather than catalogue benchmarks.
-- Keep the negative CtD non-reversal and DaG instability boundary visible.
-- Prefer five conceptual main figures; push resource/mapping/implementation details to Supplementary Materials.
+- Main text tells one escalating story rather than cataloguing benchmarks.
+- Keep the negative CtD non-reversal, DaG instability boundary and ChEMBL broad-K reversal visible.
 - AUC establishes the mechanism; Top-K identity and later/independent evidence establish the consequence.
-- Later database support is not called biological truth.
+- Treat the **experimental frontier** (small Top-K lists) as scientifically important without claiming that one model is globally superior.
+- Later database support and curated ChEMBL support are evidence, not an unbiased census of biological truth.
 - Unknown pairs are never called true negatives without evidence.
 
-## Files to prepare when Science send gates are passed
+## Completed send-gate evidence
+
+- [x] Cross-domain structural-null replication: 4/4 relation families.
+- [x] Model-rank reversals under frozen evaluation rules.
+- [x] Stability-controlled hypothesis identity in DTI.
+- [x] Independent PPI hypothesis-identity replication.
+- [x] Non-circular BioGRID future-evidence ranking on a shared complete universe.
+- [x] Paired uncertainty for BioGRID future evidence (20,000 bootstrap resamples; positive SVD-minus-NeuralMF difference at every prespecified K).
+- [x] Independent non-PPI external consequence in ChEMBL 37, with the high-priority-frontier effect and broad-K boundary both retained.
+
+## Remaining hard send gates
+
+- [ ] Complete the frozen GraphBAN contemporary-model challenge on the full planned five-seed set.
+- [ ] Finalize the Anti-DDI evidence-state robustness analysis without conflating evidence state and structural exposure.
+- [ ] Complete the related-paper/duplicate-publication audit using `RELATED_PAPER_BOUNDARY.md` against the actual final manuscripts.
+- [ ] Freeze final figures, code/data provenance and repository release/DOI.
+- [ ] Verify exact then-current Science formatting, file and policy requirements immediately before upload.
+
+## Files to prepare when the remaining gates are passed
 
 - final main manuscript using the then-current Science template;
 - publication-quality main figures;
@@ -105,11 +120,10 @@ State related manuscripts/resources transparently, especially Anti-DDI, and expl
 
 Do not submit to Science if any of these remain unresolved:
 
-- independent non-PPI evidence consequence not completed or conclusively mapping-limited without a defensible alternative;
-- no contemporary-model challenge;
-- prospective-yield uncertainty omitted;
-- headline broader than the actual cross-domain evidence;
+- the full contemporary-model challenge is absent or technically non-comparable;
+- headline is broader than the cross-domain and cutoff-dependent evidence;
 - unresolved duplicate-publication/related-paper overlap with Anti-DDI;
+- evidence-state analysis claims a causal evidence effect while structural imbalance remains uncontrolled;
 - unreproducible result or missing input provenance/checksum;
 - cover letter reads as a benchmarking/methods contribution rather than a general scientific-decision result.
 
@@ -119,4 +133,4 @@ Before upload, every component should answer the same question:
 
 > If this result is correct, does it change how scientists should interpret AI systems that choose what biology to investigate next?
 
-If the answer is obvious from the title, abstract, Figure 1 and cover-letter first paragraph without specialist knowledge, the package is shaped for Science. If not, we revise before submission.
+If the answer is obvious from the title, abstract, Figure 1 and cover-letter first paragraph without specialist knowledge, the package is shaped for Science. If not, revise before submission.
