@@ -1,15 +1,14 @@
 cff-version: 1.2.0
 message: >-
-  If you use this resource, cite the archived corrective release and the
-  accompanying article when available.
+  This branch is a pre-submission reproducibility package. Cite the exact
+  archived release/commit used; cite the peer-reviewed article once available.
 title: >-
-  Anti-DDI v3.0.1: an evidence framework and benchmark resource for drug non-interaction
-version: 3.0.1
-date-released: "2026-08-20"
-type: dataset
+  Benchmark design redirects biomedical discovery: reproducibility package
+version: pre-submission-2026.09.13
+date-released: "2026-09-13"
+type: software
 license:
   - MIT
-  - CC-BY-4.0
 authors:
   - family-names: Noor
     given-names: Adeeb
@@ -18,27 +17,27 @@ authors:
       Technology, King Abdulaziz University, Jeddah, Saudi Arabia
     email: arnoor@kau.edu.sa
     orcid: "https://orcid.org/0000-0002-8251-1853"
-repository-code: "https://github.com/adeebnoor/ANTI-DDI"
-url: "https://github.com/adeebnoor/ANTI-DDI"
+repository-code: "https://github.com/adeebnoor/ANTI-DDI/tree/science-structural-shortcuts"
+url: "https://github.com/adeebnoor/ANTI-DDI/tree/science-structural-shortcuts"
 keywords:
-  - Anti-DDI
-  - drug-drug interactions
-  - drug non-interaction
-  - clinical decision support
-  - pharmacovigilance
-  - clinical pharmacology
-  - negative controls
-  - degree bias
-  - benchmarking
+  - biomedical artificial intelligence
+  - benchmark design
+  - link prediction
+  - model selection
+  - hypothesis prioritization
+  - network biology
+  - drug-target interaction
+  - protein-protein interaction
+  - structural bias
   - reproducibility
 abstract: >-
-  Anti-DDI v3.0.1 is an evidence-state framework and benchmark resource for
-  drug non-interaction research. The release contains 797 audited pair records;
-  538 T1/T2 records form the default higher-support research benchmark candidate
-  set. It separates supported candidates from limited, unresolved, structural-
-  control, and positive-concern-excluded states; ships a reproducible ATC5
-  structural-bias diagnostic and eight targeted human clinical-pharmacology
-  anchors; and preserves the complete audit/provenance trail. A classifier/RIDI
-  validation experiment documented in v3.0.0 was withdrawn after an adversarial
-  audit identified label leakage and an invalid safety comparison. The resource
-  is for research and benchmarking and is not a prescribing safety list.
+  Reproducibility package for a pre-submission research article testing whether
+  biomedical AI benchmark construction changes model selection, hypothesis
+  identity, and the evidence concentrated among prioritized hypotheses. The
+  package contains frozen cross-domain structural diagnostics, learned-model
+  comparisons, stability-controlled DTI and PPI hypothesis-turnover analyses,
+  a historical BioGRID later-evidence experiment, an independent ChEMBL 37 DTI
+  evidence analysis, negative controls and boundaries, and a leakage-free
+  contemporary-model challenge. The package does not claim that structural
+  neutralization is universally optimal or that later database additions are
+  unbiased biological truth.
