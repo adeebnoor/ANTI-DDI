@@ -1,5 +1,8 @@
 # Anti-DDI v3.0.1 — evidence states for drug non-interaction
 
+> **Looking for the separate Science manuscript project?**  
+> The pre-submission reproducibility package for **“Benchmark design redirects biomedical discovery”** is maintained on the dedicated [`science-structural-shortcuts`](https://github.com/adeebnoor/ANTI-DDI/tree/science-structural-shortcuts) branch. The Science manuscript and Anti-DDI v3.0.1 are scientifically related but distinct projects; this `main` branch remains the Anti-DDI resource of record.
+
 **797 audited pair records · 538 T1/T2 higher-support benchmark candidates · 8 targeted human/regulatory illustrations**
 
 Anti-DDI starts from one design principle: **a missing edge is an observation about a database; an Anti-DDI state is a claim about evidence.** Drug–drug interaction (DDI) informatics represents reasons for concern explicitly, but evidence against a clinically meaningful interaction is often collapsed with sparse evidence, incomplete coverage, or simple absence. Anti-DDI keeps those states separate.
